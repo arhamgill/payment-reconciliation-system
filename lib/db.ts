@@ -27,7 +27,7 @@ export const pool =
     ssl: { rejectUnauthorized: false },
     max: 10,
     idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 5000,
+    connectionTimeoutMillis: 15000,
   });
 
 if (process.env.NODE_ENV !== 'production') {
