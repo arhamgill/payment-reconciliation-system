@@ -19,7 +19,8 @@ ORDER BY ABS(rr.amount_diff) DESC NULLS LAST;`,
     sql: `SELECT transaction_id, bank_amount, internal_amount,
   ABS(amount_diff) AS abs_diff, match_status
 FROM reconciliation_results
-WHERE amount_diff IS NOT NULL
+WHERE match_status = 'mismatched'
+  AND amount_diff IS NOT NULL
   AND amount_diff != 0
 ORDER BY ABS(amount_diff) DESC
 LIMIT 10;`,
@@ -73,7 +74,7 @@ ORDER BY upload_date DESC;`,
     sql: `SELECT currency,
   COUNT(*) AS transaction_count,
   SUM(amount) AS total_amount,
-  AVG(amount) AS avg_amount
+  ROUND(AVG(amount), 2) AS avg_amount
 FROM bank_transactions
 GROUP BY currency
 ORDER BY total_amount DESC;`,
