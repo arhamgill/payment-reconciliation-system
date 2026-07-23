@@ -61,5 +61,5 @@ export async function uploadAction(formData: FormData) {
   revalidatePath('/runs');
   revalidatePath('/issues');
 
-  redirect(`/runs/${runId}`);
+  return { runId };
 }

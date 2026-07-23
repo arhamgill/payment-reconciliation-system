@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { FileDropZone } from '@/components/FileDropZone';
 import { uploadAction } from '@/app/actions/upload';
 
 export default function UploadPage() {
+  const router = useRouter();
   const [bankFile, setBankFile] = useState<File | null>(null);
   const [internalFile, setInternalFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -35,7 +37,13 @@ export default function UploadPage() {
     formData.append('internal_file', internalFile);
 
     try {
-      await uploadAction(formData);
+      const res = await uploadAction(formData);
+      if (res?.runId) {
+        router.push(`/runs/${res.runId}`);
+      } else {
+        setError('Failed to retrieve new run ID.');
+        setLoading(false);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload and reconciliation failed.');
       setLoading(false);
