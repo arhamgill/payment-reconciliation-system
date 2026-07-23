@@ -30,9 +30,11 @@ export const ReconciliationTable: React.FC<ReconciliationTableProps> = ({ rows }
     return isNaN(num) ? '—' : `$${num.toFixed(2)}`;
   };
 
-  const formatDate = (val: string | null) => {
+  const formatDate = (val: string | null | Date) => {
     if (!val) return '—';
-    return String(val).split('T')[0];
+    const d = new Date(val);
+    if (isNaN(d.getTime())) return String(val).split('T')[0];
+    return d.toISOString().split('T')[0];
   };
 
   return (

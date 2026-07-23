@@ -9,6 +9,10 @@ const ALL_RUNS_QUERY = `SELECT id, run_date, bank_filename, internal_filename,
        total_bank_records, total_internal_records,
        matched_count, mismatched_count,
        missing_in_bank_count, missing_in_internal_count,
+       ROUND(
+         matched_count::numeric / NULLIF(matched_count + mismatched_count + missing_in_bank_count + missing_in_internal_count, 0) * 100,
+         1
+       ) AS match_pct,
        status
 FROM reconciliation_runs
 ORDER BY run_date DESC;`;
@@ -27,6 +31,7 @@ export default async function AllRunsPage() {
     mismatched_count: number;
     missing_in_bank_count: number;
     missing_in_internal_count: number;
+    match_pct: number | string | null;
     status: string;
   }>(ALL_RUNS_QUERY);
 
@@ -58,13 +63,14 @@ export default async function AllRunsPage() {
               <th>Mismatched</th>
               <th>Missing (Bank)</th>
               <th>Missing (Internal)</th>
+              <th>Match Rate</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
             {res.rows.length === 0 ? (
               <tr>
-                <td colSpan={11} style={{ textAlign: 'center', padding: '32px', color: 'var(--text-secondary)' }}>
+                <td colSpan={12} style={{ textAlign: 'center', padding: '32px', color: 'var(--text-secondary)' }}>
                   No reconciliation runs executed yet.
                 </td>
               </tr>
@@ -95,6 +101,9 @@ export default async function AllRunsPage() {
                   </td>
                   <td style={{ color: run.missing_in_internal_count > 0 ? 'var(--danger)' : 'inherit' }}>
                     {run.missing_in_internal_count}
+                  </td>
+                  <td style={{ fontWeight: 600, color: run.match_pct && Number(run.match_pct) === 100 ? 'var(--success)' : 'var(--accent)' }}>
+                    {run.match_pct !== null && run.match_pct !== undefined ? `${run.match_pct}%` : '—'}
                   </td>
                   <td>
                     <StatusChip status={run.status} />

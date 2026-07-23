@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { resolveAction } from '@/app/actions/resolve';
 
 interface ResolveModalProps {
@@ -14,6 +15,7 @@ export const ResolveModal: React.FC<ResolveModalProps> = ({
   transactionId,
   onClose,
 }) => {
+  const router = useRouter();
   const [notes, setNotes] = useState('');
   const [resolvedBy, setResolvedBy] = useState('Ops Admin');
   const [loading, setLoading] = useState(false);
@@ -24,6 +26,7 @@ export const ResolveModal: React.FC<ResolveModalProps> = ({
     try {
       await resolveAction(resultId, notes, resolvedBy);
       onClose();
+      router.refresh();
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Failed to resolve issue');
     } finally {

@@ -19,6 +19,13 @@ export default function SearchPage() {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const VALID_STATUSES = ['matched', 'mismatched', 'missing_in_bank', 'missing_in_internal'];
+    if (status !== 'ALL' && !VALID_STATUSES.includes(status)) {
+      alert('Invalid status filter selected.');
+      return;
+    }
+
     setLoading(true);
 
     // Build SQL string for demonstration and query execution
@@ -41,10 +48,10 @@ WHERE 1=1`;
       sql += `\n  AND rr.resolved = FALSE`;
     }
     if (fromDate) {
-      sql += `\n  AND COALESCE(rr.bank_date, rr.internal_date) >= '${fromDate}'`;
+      sql += `\n  AND COALESCE(rr.bank_date, rr.internal_date) >= '${fromDate.replace(/'/g, '')}'`;
     }
     if (toDate) {
-      sql += `\n  AND COALESCE(rr.bank_date, rr.internal_date) <= '${toDate}'`;
+      sql += `\n  AND COALESCE(rr.bank_date, rr.internal_date) <= '${toDate.replace(/'/g, '')}'`;
     }
 
     sql += `\nORDER BY rr.created_at DESC\nLIMIT 100;`;

@@ -17,6 +17,16 @@ export default function UploadPage() {
       return;
     }
 
+    if (!bankFile.name.toLowerCase().endsWith('.csv')) {
+      setError('Bank statement file must have a .csv extension.');
+      return;
+    }
+
+    if (!internalFile.name.toLowerCase().endsWith('.csv')) {
+      setError('Internal ledger file must have a .csv extension.');
+      return;
+    }
+
     setLoading(true);
     setError(null);
 

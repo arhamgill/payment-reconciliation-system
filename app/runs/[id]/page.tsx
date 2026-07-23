@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation';
 import { pool } from '@/lib/db';
 import { StatCard } from '@/components/StatCard';
-import { ReconciliationTable, ReconciliationRow } from '@/components/ReconciliationTable';
+import { ReconciliationRow } from '@/components/ReconciliationTable';
+import { SingleRunClient } from '@/components/SingleRunClient';
 import { SqlPanel } from '@/components/SqlPanel';
 
 export const revalidate = 0;
@@ -9,6 +10,31 @@ export const revalidate = 0;
 interface SingleRunPageProps {
   params: Promise<{ id: string }>;
 }
+
+const RECONCILIATION_ENGINE_SQL = `INSERT INTO reconciliation_results
+  (run_id, transaction_id, match_status,
+   bank_amount, internal_amount, amount_diff,
+   bank_date, internal_date)
+SELECT
+  $1 AS run_id,
+  COALESCE(b.transaction_id, i.transaction_id) AS transaction_id,
+  CASE
+    WHEN b.transaction_id IS NULL                        THEN 'missing_in_bank'
+    WHEN i.transaction_id IS NULL                        THEN 'missing_in_internal'
+    WHEN b.amount <> i.amount OR b.transaction_date <> i.transaction_date
+                                                         THEN 'mismatched'
+    ELSE                                                      'matched'
+  END AS match_status,
+  b.amount            AS bank_amount,
+  i.amount            AS internal_amount,
+  i.amount - b.amount AS amount_diff,
+  b.transaction_date  AS bank_date,
+  i.transaction_date  AS internal_date
+FROM bank_transactions b
+FULL OUTER JOIN internal_transactions i
+  ON b.transaction_id = i.transaction_id
+  AND b.run_id = i.run_id
+WHERE COALESCE(b.run_id, i.run_id) = $1;`;
 
 export default async function SingleRunPage({ params }: SingleRunPageProps) {
   const { id: idStr } = await params;
@@ -109,14 +135,26 @@ ORDER BY
         />
       </div>
 
-      <div style={{ marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '12px' }}>
-          Reconciliation Results ({resultsRes.rows.length} records)
-        </h2>
-        <ReconciliationTable rows={resultsRes.rows} />
-      </div>
+      {/* Interactive Results & Filters */}
+      <SingleRunClient runId={run.id} rows={resultsRes.rows} />
 
-      <SqlPanel query={resultsQuery} executionMs={executionMs} params={{ run_id: runId }} />
+      {/* SQL Panels */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '24px' }}>
+        <div>
+          <h3 style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '8px' }}>
+            🔍 Query Used to View Run Results
+          </h3>
+          <SqlPanel query={resultsQuery} executionMs={executionMs} params={{ run_id: runId }} />
+        </div>
+
+        <div>
+          <h3 style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '8px' }}>
+            ⚙️ Core Reconciliation Engine SQL (FULL OUTER JOIN)
+          </h3>
+          <SqlPanel query={RECONCILIATION_ENGINE_SQL} params={{ run_id: runId }} />
+        </div>
+      </div>
     </div>
   );
 }
+
