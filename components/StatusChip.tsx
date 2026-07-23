@@ -48,6 +48,10 @@ export const StatusChip: React.FC<StatusChipProps> = ({
     color = '#f59e0b';
     bg = '#1c1202';
     label = 'Discrepancies Found';
+  } else if (effectiveStatus === 'discrepancies_resolved' || effectiveStatus === 'all_resolved') {
+    color = '#10b981';
+    bg = '#042f2e';
+    label = 'Discrepancies Resolved';
   } else if (effectiveStatus === 'fully_balanced' || effectiveStatus === 'completed') {
     color = '#22c55e';
     bg = '#052e16';

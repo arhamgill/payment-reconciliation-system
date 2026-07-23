@@ -45,6 +45,19 @@ async function migrate() {
     END;
   `);
 
+  // Update runs where all discrepancies have been resolved by Ops
+  await pool.query(`
+    UPDATE reconciliation_runs run
+    SET status = 'discrepancies_resolved'
+    WHERE status = 'discrepancies_found'
+      AND NOT EXISTS (
+        SELECT 1 FROM reconciliation_results rr
+        WHERE rr.run_id = run.id
+          AND rr.resolved = FALSE
+          AND rr.match_status != 'matched'
+      );
+  `);
+
   console.log('Migration complete.');
   await pool.end();
 }
