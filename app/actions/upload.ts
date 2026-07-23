@@ -56,5 +56,9 @@ export async function uploadAction(formData: FormData) {
   // Run reconciliation
   await runReconciliation(runId);
 
+  revalidatePath('/');
+  revalidatePath('/runs');
+  revalidatePath('/issues');
+
   redirect(`/runs/${runId}`);
 }

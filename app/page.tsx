@@ -4,7 +4,7 @@ import { StatCard } from '@/components/StatCard';
 import { StatusChip } from '@/components/StatusChip';
 import { SqlPanel } from '@/components/SqlPanel';
 
-export const revalidate = 0;
+export const revalidate = 30;
 
 const DASHBOARD_QUERY = `SELECT
   run_date::date                                                          AS date,
