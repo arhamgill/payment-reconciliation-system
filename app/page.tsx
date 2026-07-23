@@ -13,7 +13,7 @@ const DASHBOARD_QUERY = `SELECT
   (total_bank_records + total_internal_records)                           AS total_records,
   matched_count,
   (mismatched_count + missing_in_bank_count + missing_in_internal_count) AS issues,
-  ROUND(matched_count::numeric / NULLIF(total_bank_records + total_internal_records, 0) * 100, 1) AS match_pct,
+  ROUND(matched_count::numeric / NULLIF(matched_count + mismatched_count + missing_in_bank_count + missing_in_internal_count, 0) * 100, 1) AS match_pct,
   status
 FROM reconciliation_runs
 ORDER BY run_date DESC
@@ -85,7 +85,8 @@ export default async function DashboardPage() {
   const totalRecords = parseInt(runsCount > 0 ? todayStats.total_records : overallStats.total_records, 10);
   const mismatches = parseInt(runsCount > 0 ? todayStats.mismatches : overallStats.mismatches, 10);
   const matched = parseInt(runsCount > 0 ? todayStats.matched : overallStats.matched, 10);
-  const matchRate = totalRecords > 0 ? ((matched / totalRecords) * 100).toFixed(1) + '%' : '100%';
+  const totalReconciledItems = matched + mismatches;
+  const matchRate = totalReconciledItems > 0 ? ((matched / totalReconciledItems) * 100).toFixed(1) + '%' : '100%';
 
   return (
     <div>

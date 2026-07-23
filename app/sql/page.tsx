@@ -52,7 +52,7 @@ ORDER BY run.run_date ASC;`,
   bank_filename,
   total_bank_records + total_internal_records AS total_records,
   matched_count,
-  ROUND(matched_count::numeric / NULLIF(total_bank_records, 0) * 100, 1) AS match_rate_pct,
+  ROUND(matched_count::numeric / NULLIF(matched_count + mismatched_count + missing_in_bank_count + missing_in_internal_count, 0) * 100, 1) AS match_rate_pct,
   status
 FROM reconciliation_runs
 ORDER BY run_date DESC;`,
