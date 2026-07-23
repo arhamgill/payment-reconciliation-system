@@ -44,7 +44,23 @@ export const StatusChip: React.FC<StatusChipProps> = ({
   let bg = 'var(--bg-elevated)';
   let label = status.charAt(0).toUpperCase() + status.slice(1);
 
-  if (effectiveStatus === 'matched' || effectiveStatus === 'completed') {
+  if (effectiveStatus === 'discrepancies_found') {
+    color = '#f59e0b';
+    bg = '#1c1202';
+    label = 'Discrepancies Found';
+  } else if (effectiveStatus === 'fully_balanced' || effectiveStatus === 'completed') {
+    color = '#22c55e';
+    bg = '#052e16';
+    label = 'Fully Balanced';
+  } else if (effectiveStatus === 'processing') {
+    color = '#3b82f6';
+    bg = '#0a192f';
+    label = 'Processing';
+  } else if (effectiveStatus === 'failed') {
+    color = '#ef4444';
+    bg = '#1a0a0a';
+    label = 'Failed';
+  } else if (effectiveStatus === 'matched') {
     color = '#22c55e';
     bg = '#052e16';
     label = 'Matched';

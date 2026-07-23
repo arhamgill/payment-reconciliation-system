@@ -62,7 +62,10 @@ export async function runReconciliation(runId: number): Promise<{
   const missingInBank = parseInt(counts.missing_in_bank || '0', 10);
   const missingInInternal = parseInt(counts.missing_in_internal || '0', 10);
 
-  // Step 3: Update the run row with final counts
+  // Step 3: Update the run row with final counts and run health status
+  const totalIssues = mismatched + missingInBank + missingInInternal;
+  const runStatus = totalIssues === 0 ? 'fully_balanced' : 'discrepancies_found';
+
   await pool.query(
     `
     UPDATE reconciliation_runs SET
@@ -70,10 +73,10 @@ export async function runReconciliation(runId: number): Promise<{
       mismatched_count          = $3,
       missing_in_bank_count     = $4,
       missing_in_internal_count = $5,
-      status                    = 'completed'
+      status                    = $6
     WHERE id = $1;
   `,
-    [runId, matched, mismatched, missingInBank, missingInInternal]
+    [runId, matched, mismatched, missingInBank, missingInInternal, runStatus]
   );
 
   return { matched, mismatched, missingInBank, missingInInternal };

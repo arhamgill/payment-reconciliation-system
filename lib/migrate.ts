@@ -36,6 +36,15 @@ async function migrate() {
     WHERE match_status = 'mismatched';
   `);
 
+  // Update existing runs to granular status (discrepancies_found vs fully_balanced)
+  await pool.query(`
+    UPDATE reconciliation_runs
+    SET status = CASE
+      WHEN (mismatched_count + missing_in_bank_count + missing_in_internal_count) > 0 THEN 'discrepancies_found'
+      ELSE 'fully_balanced'
+    END;
+  `);
+
   console.log('Migration complete.');
   await pool.end();
 }
