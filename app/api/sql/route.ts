@@ -26,7 +26,8 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const finalQuery = lower.includes('limit') ? trimmed : `${trimmed} LIMIT 500`;
+    const cleanQuery = trimmed.replace(/;+\s*$/, '');
+    const finalQuery = lower.includes('limit') ? cleanQuery : `${cleanQuery} LIMIT 500`;
 
     const start = Date.now();
     const result = await pool.query(finalQuery);
