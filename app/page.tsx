@@ -134,19 +134,19 @@ export default async function DashboardPage() {
         </div>
 
         <div style={{ overflowX: 'auto', border: '1px solid var(--border)', borderRadius: '4px' }}>
-          <table>
+          <table style={{ minWidth: '980px' }}>
             <thead>
               <tr>
                 <th>Run #</th>
-                <th>Date</th>
-                <th>Bank File</th>
-                <th>Internal File</th>
-                <th>Bank Recs</th>
-                <th>Internal Recs</th>
-                <th>Matched</th>
-                <th>Issues</th>
-                <th>Status</th>
-                <th style={{ textAlign: 'right' }}>Action</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Date</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Bank File</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Internal File</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Bank Recs</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Internal Recs</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Matched</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Issues</th>
+                <th style={{ whiteSpace: 'nowrap' }}>Status</th>
+                <th style={{ textAlign: 'right', whiteSpace: 'nowrap', minWidth: '130px' }}>Action</th>
               </tr>
             </thead>
             <tbody>
@@ -161,7 +161,7 @@ export default async function DashboardPage() {
                   const issues = run.mismatched_count + run.missing_in_bank_count + run.missing_in_internal_count;
                   return (
                     <tr key={run.id}>
-                      <td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
                         <Link
                           href={`/runs/${run.id}`}
                           style={{ color: 'var(--text-primary)', fontWeight: 600, textDecoration: 'none' }}
@@ -169,28 +169,31 @@ export default async function DashboardPage() {
                           #{run.id}
                         </Link>
                       </td>
-                      <td style={{ color: 'var(--text-secondary)' }}>
+                      <td style={{ color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
                         {new Date(run.run_date).toISOString().replace('T', ' ').slice(0, 16)}
                       </td>
-                      <td style={{ fontFamily: 'monospace' }}>{run.bank_filename}</td>
-                      <td style={{ fontFamily: 'monospace' }}>{run.internal_filename}</td>
+                      <td style={{ fontFamily: 'monospace', whiteSpace: 'nowrap' }}>{run.bank_filename}</td>
+                      <td style={{ fontFamily: 'monospace', whiteSpace: 'nowrap' }}>{run.internal_filename}</td>
                       <td>{run.total_bank_records}</td>
                       <td>{run.total_internal_records}</td>
                       <td style={{ color: 'var(--success)' }}>{run.matched_count}</td>
                       <td style={{ color: issues > 0 ? 'var(--warning)' : 'inherit' }}>{issues}</td>
-                      <td>
+                      <td style={{ whiteSpace: 'nowrap' }}>
                         <StatusChip status={run.status} />
                       </td>
-                      <td style={{ textAlign: 'right' }}>
+                      <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
                         <Link
                           href={`/runs/${run.id}`}
                           className="btn btn-secondary"
                           style={{
                             fontSize: '11px',
-                            padding: '3px 10px',
+                            padding: '4px 12px',
                             borderColor: 'var(--accent)',
                             color: 'var(--accent)',
                             fontWeight: 600,
+                            whiteSpace: 'nowrap',
+                            display: 'inline-flex',
+                            alignItems: 'center',
                           }}
                         >
                           View Details →

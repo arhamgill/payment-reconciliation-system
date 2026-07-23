@@ -50,22 +50,22 @@ export default async function AllRunsPage() {
       </div>
 
       <div style={{ overflowX: 'auto', border: '1px solid var(--border)', borderRadius: '4px' }}>
-        <table>
+        <table style={{ minWidth: '1150px' }}>
           <thead>
             <tr>
               <th>Run #</th>
-              <th>Execution Date</th>
-              <th>Bank File</th>
-              <th>Internal File</th>
-              <th>Bank Recs</th>
-              <th>Internal Recs</th>
-              <th>Matched</th>
-              <th>Mismatched</th>
-              <th>Missing (Bank)</th>
-              <th>Missing (Internal)</th>
-              <th>Match Rate</th>
-              <th>Status</th>
-              <th style={{ textAlign: 'right' }}>Action</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Execution Date</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Bank File</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Internal File</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Bank Recs</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Internal Recs</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Matched</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Mismatched</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Missing (Bank)</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Missing (Internal)</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Match Rate</th>
+              <th style={{ whiteSpace: 'nowrap' }}>Status</th>
+              <th style={{ textAlign: 'right', whiteSpace: 'nowrap', minWidth: '130px' }}>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -78,7 +78,7 @@ export default async function AllRunsPage() {
             ) : (
               res.rows.map((run) => (
                 <tr key={run.id}>
-                  <td>
+                  <td style={{ whiteSpace: 'nowrap' }}>
                     <Link
                       href={`/runs/${run.id}`}
                       style={{ color: 'var(--text-primary)', fontWeight: 600, textDecoration: 'none' }}
@@ -86,11 +86,11 @@ export default async function AllRunsPage() {
                       #{run.id}
                     </Link>
                   </td>
-                  <td style={{ color: 'var(--text-secondary)' }}>
+                  <td style={{ color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
                     {new Date(run.run_date).toISOString().replace('T', ' ').slice(0, 16)}
                   </td>
-                  <td style={{ fontFamily: 'monospace' }}>{run.bank_filename}</td>
-                  <td style={{ fontFamily: 'monospace' }}>{run.internal_filename}</td>
+                  <td style={{ fontFamily: 'monospace', whiteSpace: 'nowrap' }}>{run.bank_filename}</td>
+                  <td style={{ fontFamily: 'monospace', whiteSpace: 'nowrap' }}>{run.internal_filename}</td>
                   <td>{run.total_bank_records}</td>
                   <td>{run.total_internal_records}</td>
                   <td style={{ color: 'var(--success)' }}>{run.matched_count}</td>
@@ -103,22 +103,25 @@ export default async function AllRunsPage() {
                   <td style={{ color: run.missing_in_internal_count > 0 ? 'var(--danger)' : 'inherit' }}>
                     {run.missing_in_internal_count}
                   </td>
-                  <td style={{ fontWeight: 600, color: run.match_pct && Number(run.match_pct) === 100 ? 'var(--success)' : 'var(--accent)' }}>
+                  <td style={{ fontWeight: 600, color: run.match_pct && Number(run.match_pct) === 100 ? 'var(--success)' : 'var(--accent)', whiteSpace: 'nowrap' }}>
                     {run.match_pct !== null && run.match_pct !== undefined ? `${run.match_pct}%` : '—'}
                   </td>
-                  <td>
+                  <td style={{ whiteSpace: 'nowrap' }}>
                     <StatusChip status={run.status} />
                   </td>
-                  <td style={{ textAlign: 'right' }}>
+                  <td style={{ textAlign: 'right', whiteSpace: 'nowrap' }}>
                     <Link
                       href={`/runs/${run.id}`}
                       className="btn btn-secondary"
                       style={{
                         fontSize: '11px',
-                        padding: '3px 10px',
+                        padding: '4px 12px',
                         borderColor: 'var(--accent)',
                         color: 'var(--accent)',
                         fontWeight: 600,
+                        whiteSpace: 'nowrap',
+                        display: 'inline-flex',
+                        alignItems: 'center',
                       }}
                     >
                       View Details →
