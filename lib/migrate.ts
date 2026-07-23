@@ -23,6 +23,19 @@ const pool = new Pool({
 async function migrate() {
   const sql = fs.readFileSync(path.join(process.cwd(), 'lib/schema.sql'), 'utf8');
   await pool.query(sql);
+
+  // Update existing mismatched rows to granular mismatch statuses
+  await pool.query(`
+    UPDATE reconciliation_results
+    SET match_status = CASE
+      WHEN bank_amount <> internal_amount AND bank_date <> internal_date THEN 'amount_and_date_mismatch'
+      WHEN bank_amount <> internal_amount THEN 'amount_mismatch'
+      WHEN bank_date <> internal_date THEN 'date_mismatch'
+      ELSE match_status
+    END
+    WHERE match_status = 'mismatched';
+  `);
+
   console.log('Migration complete.');
   await pool.end();
 }

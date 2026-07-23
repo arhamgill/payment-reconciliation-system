@@ -6,7 +6,7 @@ export async function runReconciliation(runId: number): Promise<{
   missingInBank: number;
   missingInInternal: number;
 }> {
-  // Step 1: Full outer join to find all combinations
+  // Step 1: Full outer join to find all combinations and classify granular status
   const reconcileSQL = `
     INSERT INTO reconciliation_results
       (run_id, transaction_id, match_status,
@@ -16,11 +16,13 @@ export async function runReconciliation(runId: number): Promise<{
       $1 AS run_id,
       COALESCE(b.transaction_id, i.transaction_id) AS transaction_id,
       CASE
-        WHEN b.transaction_id IS NULL                        THEN 'missing_in_bank'
-        WHEN i.transaction_id IS NULL                        THEN 'missing_in_internal'
-        WHEN b.amount <> i.amount OR b.transaction_date <> i.transaction_date
-                                                             THEN 'mismatched'
-        ELSE                                                      'matched'
+        WHEN b.transaction_id IS NULL                                   THEN 'missing_in_bank'
+        WHEN i.transaction_id IS NULL                                   THEN 'missing_in_internal'
+        WHEN b.amount <> i.amount AND b.transaction_date <> i.transaction_date
+                                                                        THEN 'amount_and_date_mismatch'
+        WHEN b.amount <> i.amount                                        THEN 'amount_mismatch'
+        WHEN b.transaction_date <> i.transaction_date                    THEN 'date_mismatch'
+        ELSE                                                                 'matched'
       END AS match_status,
       b.amount            AS bank_amount,
       i.amount            AS internal_amount,
@@ -45,7 +47,7 @@ export async function runReconciliation(runId: number): Promise<{
     `
     SELECT
       COUNT(*) FILTER (WHERE match_status = 'matched')            AS matched,
-      COUNT(*) FILTER (WHERE match_status = 'mismatched')         AS mismatched,
+      COUNT(*) FILTER (WHERE match_status IN ('mismatched', 'amount_mismatch', 'date_mismatch', 'amount_and_date_mismatch')) AS mismatched,
       COUNT(*) FILTER (WHERE match_status = 'missing_in_bank')    AS missing_in_bank,
       COUNT(*) FILTER (WHERE match_status = 'missing_in_internal') AS missing_in_internal
     FROM reconciliation_results
