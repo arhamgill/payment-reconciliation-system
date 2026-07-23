@@ -9,13 +9,30 @@ interface SingleRunClientProps {
   rows: ReconciliationRow[];
 }
 
+type FilterType = 'ALL' | 'matched' | 'amount_mismatch' | 'date_mismatch' | 'missing_in_bank' | 'missing_in_internal';
+
 export const SingleRunClient: React.FC<SingleRunClientProps> = ({ runId, rows }) => {
-  const [filter, setFilter] = useState<'ALL' | 'matched' | 'mismatched' | 'missing_in_bank' | 'missing_in_internal'>('ALL');
+  const [filter, setFilter] = useState<FilterType>('ALL');
   const [deleting, setDeleting] = useState(false);
+
+  const isAmountDiff = (r: ReconciliationRow) =>
+    r.bank_amount !== null &&
+    r.internal_amount !== null &&
+    parseFloat(String(r.bank_amount)) !== parseFloat(String(r.internal_amount));
+
+  const isDateDiff = (r: ReconciliationRow) =>
+    r.bank_date &&
+    r.internal_date &&
+    String(r.bank_date).split('T')[0] !== String(r.internal_date).split('T')[0];
 
   const filteredRows = rows.filter((r) => {
     if (filter === 'ALL') return true;
-    return r.match_status === filter;
+    if (filter === 'matched') return r.match_status === 'matched';
+    if (filter === 'amount_mismatch') return r.match_status === 'mismatched' && isAmountDiff(r);
+    if (filter === 'date_mismatch') return r.match_status === 'mismatched' && isDateDiff(r);
+    if (filter === 'missing_in_bank') return r.match_status === 'missing_in_bank';
+    if (filter === 'missing_in_internal') return r.match_status === 'missing_in_internal';
+    return true;
   });
 
   const handleDelete = async () => {
@@ -28,17 +45,19 @@ export const SingleRunClient: React.FC<SingleRunClientProps> = ({ runId, rows })
   const counts = {
     ALL: rows.length,
     matched: rows.filter((r) => r.match_status === 'matched').length,
-    mismatched: rows.filter((r) => r.match_status === 'mismatched').length,
+    amount_mismatch: rows.filter((r) => r.match_status === 'mismatched' && isAmountDiff(r)).length,
+    date_mismatch: rows.filter((r) => r.match_status === 'mismatched' && isDateDiff(r)).length,
     missing_in_bank: rows.filter((r) => r.match_status === 'missing_in_bank').length,
     missing_in_internal: rows.filter((r) => r.match_status === 'missing_in_internal').length,
   };
 
-  const filterButtons: { label: string; key: keyof typeof counts; color?: string }[] = [
+  const filterButtons: { label: string; key: FilterType }[] = [
     { label: `All (${counts.ALL})`, key: 'ALL' },
-    { label: `Matched (${counts.matched})`, key: 'matched', color: 'var(--success)' },
-    { label: `Mismatched (${counts.mismatched})`, key: 'mismatched', color: 'var(--warning)' },
-    { label: `Missing Bank (${counts.missing_in_bank})`, key: 'missing_in_bank', color: 'var(--danger)' },
-    { label: `Missing Internal (${counts.missing_in_internal})`, key: 'missing_in_internal', color: 'var(--danger)' },
+    { label: `Matched (${counts.matched})`, key: 'matched' },
+    { label: `Amount Mismatches (${counts.amount_mismatch})`, key: 'amount_mismatch' },
+    { label: `Date Mismatches (${counts.date_mismatch})`, key: 'date_mismatch' },
+    { label: `Missing Bank (${counts.missing_in_bank})`, key: 'missing_in_bank' },
+    { label: `Missing Internal (${counts.missing_in_internal})`, key: 'missing_in_internal' },
   ];
 
   return (

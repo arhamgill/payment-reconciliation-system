@@ -62,27 +62,47 @@ export const ReconciliationTable: React.FC<ReconciliationTableProps> = ({ rows }
                 </td>
               </tr>
             ) : (
-              rows.map((row) => (
-                <tr key={row.id}>
-                  <td style={{ fontFamily: 'monospace', fontWeight: 600 }}>{row.transaction_id}</td>
-                  <td>
-                    <StatusChip status={row.match_status} />
-                  </td>
-                  <td>{formatAmount(row.bank_amount)}</td>
-                  <td>{formatAmount(row.internal_amount)}</td>
-                  <td
-                    style={{
-                      color:
-                        row.amount_diff && parseFloat(String(row.amount_diff)) !== 0
-                          ? 'var(--warning)'
-                          : 'inherit',
-                      fontFamily: 'monospace',
-                    }}
-                  >
-                    {formatAmount(row.amount_diff)}
-                  </td>
-                  <td>{formatDate(row.bank_date)}</td>
-                  <td>{formatDate(row.internal_date)}</td>
+              rows.map((row) => {
+                const formattedBankDate = formatDate(row.bank_date);
+                const formattedInternalDate = formatDate(row.internal_date);
+                const isDateMismatch =
+                  row.bank_date &&
+                  row.internal_date &&
+                  formattedBankDate !== '—' &&
+                  formattedInternalDate !== '—' &&
+                  formattedBankDate !== formattedInternalDate;
+
+                return (
+                  <tr key={row.id}>
+                    <td style={{ fontFamily: 'monospace', fontWeight: 600 }}>{row.transaction_id}</td>
+                    <td>
+                      <StatusChip
+                        status={row.match_status}
+                        bankAmount={row.bank_amount}
+                        internalAmount={row.internal_amount}
+                        bankDate={row.bank_date}
+                        internalDate={row.internal_date}
+                      />
+                    </td>
+                    <td>{formatAmount(row.bank_amount)}</td>
+                    <td>{formatAmount(row.internal_amount)}</td>
+                    <td
+                      style={{
+                        color:
+                          row.amount_diff && parseFloat(String(row.amount_diff)) !== 0
+                            ? 'var(--warning)'
+                            : 'inherit',
+                        fontFamily: 'monospace',
+                      }}
+                    >
+                      {formatAmount(row.amount_diff)}
+                    </td>
+                    <td style={{ color: isDateMismatch ? '#fbbf24' : 'inherit', fontWeight: isDateMismatch ? 600 : 400 }}>
+                      {formattedBankDate}
+                    </td>
+                    <td style={{ color: isDateMismatch ? '#fbbf24' : 'inherit', fontWeight: isDateMismatch ? 600 : 400 }}>
+                      {formattedInternalDate}
+                    </td>
                   <td>
                     {row.resolved ? (
                       <span style={{ color: 'var(--success)', fontSize: '12px' }}>✓ Resolved</span>
@@ -109,8 +129,9 @@ export const ReconciliationTable: React.FC<ReconciliationTableProps> = ({ rows }
                     )}
                   </td>
                 </tr>
-              ))
-            )}
+              );
+            })
+          )}
           </tbody>
         </table>
       </div>

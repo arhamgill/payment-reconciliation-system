@@ -2,34 +2,81 @@ import React from 'react';
 
 interface StatusChipProps {
   status: string;
+  bankAmount?: number | string | null;
+  internalAmount?: number | string | null;
+  bankDate?: string | null;
+  internalDate?: string | null;
 }
 
-export const StatusChip: React.FC<StatusChipProps> = ({ status }) => {
+export const StatusChip: React.FC<StatusChipProps> = ({
+  status,
+  bankAmount,
+  internalAmount,
+  bankDate,
+  internalDate,
+}) => {
   const normalized = status.toLowerCase();
+
+  let effectiveStatus = normalized;
+  if (normalized === 'mismatched') {
+    const isAmountDifferent =
+      bankAmount !== undefined &&
+      internalAmount !== undefined &&
+      bankAmount !== null &&
+      internalAmount !== null &&
+      parseFloat(String(bankAmount)) !== parseFloat(String(internalAmount));
+
+    const isDateDifferent =
+      bankDate &&
+      internalDate &&
+      String(bankDate).split('T')[0] !== String(internalDate).split('T')[0];
+
+    if (isAmountDifferent && isDateDifferent) {
+      effectiveStatus = 'amount_and_date_mismatch';
+    } else if (isDateDifferent) {
+      effectiveStatus = 'date_mismatch';
+    } else if (isAmountDifferent) {
+      effectiveStatus = 'amount_mismatch';
+    }
+  }
 
   let color = 'var(--text-secondary)';
   let bg = 'var(--bg-elevated)';
+  let label = status.charAt(0).toUpperCase() + status.slice(1);
 
-  if (normalized === 'matched' || normalized === 'completed') {
+  if (effectiveStatus === 'matched' || effectiveStatus === 'completed') {
     color = '#22c55e';
     bg = '#052e16';
-  } else if (normalized === 'mismatched' || normalized === 'pending') {
+    label = 'Matched';
+  } else if (effectiveStatus === 'date_mismatch') {
+    color = '#fbbf24';
+    bg = '#271e05';
+    label = 'Date Mismatch';
+  } else if (effectiveStatus === 'amount_mismatch') {
     color = '#f59e0b';
     bg = '#1c1202';
-  } else if (normalized === 'missing_in_bank' || normalized === 'missing_in_internal') {
+    label = 'Amount Mismatch';
+  } else if (effectiveStatus === 'amount_and_date_mismatch') {
+    color = '#f97316';
+    bg = '#261204';
+    label = 'Amount & Date Mismatch';
+  } else if (effectiveStatus === 'mismatched' || effectiveStatus === 'pending') {
+    color = '#f59e0b';
+    bg = '#1c1202';
+    label = 'Mismatched';
+  } else if (effectiveStatus === 'missing_in_bank') {
     color = '#ef4444';
     bg = '#1a0a0a';
-  } else if (normalized === 'resolved') {
+    label = 'Missing in Bank';
+  } else if (effectiveStatus === 'missing_in_internal') {
+    color = '#ef4444';
+    bg = '#1a0a0a';
+    label = 'Missing in Internal';
+  } else if (effectiveStatus === 'resolved') {
     color = '#8b949e';
     bg = '#1c2128';
+    label = 'Resolved';
   }
-
-  const label =
-    status === 'missing_in_bank'
-      ? 'Missing in Bank'
-      : status === 'missing_in_internal'
-      ? 'Missing in Internal'
-      : status.charAt(0).toUpperCase() + status.slice(1);
 
   return (
     <span
