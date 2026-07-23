@@ -20,7 +20,8 @@ export async function POST(req: NextRequest) {
     }
 
     for (const word of FORBIDDEN) {
-      if (lower.includes(word)) {
+      const regex = new RegExp(`\\b${word}\\b`, 'i');
+      if (regex.test(trimmed)) {
         return NextResponse.json({ error: `Forbidden keyword detected: ${word.toUpperCase()}` }, { status: 400 });
       }
     }
