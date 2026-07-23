@@ -20,6 +20,7 @@ ORDER BY ABS(rr.amount_diff) DESC NULLS LAST;`,
   ABS(amount_diff) AS abs_diff, match_status
 FROM reconciliation_results
 WHERE amount_diff IS NOT NULL
+  AND amount_diff != 0
 ORDER BY ABS(amount_diff) DESC
 LIMIT 10;`,
   },
