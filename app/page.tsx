@@ -22,59 +22,57 @@ LIMIT 10;`;
 export default async function DashboardPage() {
   const start = Date.now();
 
-  // Query stats for today
-  const statsRes = await pool.query<{
-    runs_today: string;
-    total_records: string;
-    mismatches: string;
-    matched: string;
-  }>(`
-    SELECT
-      COUNT(*) FILTER (WHERE run_date::date = CURRENT_DATE) AS runs_today,
-      COALESCE(SUM(total_bank_records + total_internal_records) FILTER (WHERE run_date::date = CURRENT_DATE), 0) AS total_records,
-      COALESCE(SUM(mismatched_count + missing_in_bank_count + missing_in_internal_count) FILTER (WHERE run_date::date = CURRENT_DATE), 0) AS mismatches,
-      COALESCE(SUM(matched_count) FILTER (WHERE run_date::date = CURRENT_DATE), 0) AS matched
-    FROM reconciliation_runs;
-  `);
-
-  // Query overall totals if today is 0
-  const overallRes = await pool.query<{
-    total_runs: string;
-    total_records: string;
-    mismatches: string;
-    matched: string;
-  }>(`
-    SELECT
-      COUNT(*) AS total_runs,
-      COALESCE(SUM(total_bank_records + total_internal_records), 0) AS total_records,
-      COALESCE(SUM(mismatched_count + missing_in_bank_count + missing_in_internal_count), 0) AS mismatches,
-      COALESCE(SUM(matched_count), 0) AS matched
-    FROM reconciliation_runs;
-  `);
-
-  // Query recent runs
-  const recentRunsRes = await pool.query<{
-    id: number;
-    run_date: Date;
-    bank_filename: string;
-    internal_filename: string;
-    total_bank_records: number;
-    total_internal_records: number;
-    matched_count: number;
-    mismatched_count: number;
-    missing_in_bank_count: number;
-    missing_in_internal_count: number;
-    status: string;
-  }>(`
-    SELECT id, run_date, bank_filename, internal_filename,
-           total_bank_records, total_internal_records,
-           matched_count, mismatched_count,
-           missing_in_bank_count, missing_in_internal_count,
-           status
-    FROM reconciliation_runs
-    ORDER BY run_date DESC
-    LIMIT 10;
-  `);
+  // Execute all 3 dashboard queries concurrently in parallel
+  const [statsRes, overallRes, recentRunsRes] = await Promise.all([
+    pool.query<{
+      runs_today: string;
+      total_records: string;
+      mismatches: string;
+      matched: string;
+    }>(`
+      SELECT
+        COUNT(*) FILTER (WHERE run_date::date = CURRENT_DATE) AS runs_today,
+        COALESCE(SUM(total_bank_records + total_internal_records) FILTER (WHERE run_date::date = CURRENT_DATE), 0) AS total_records,
+        COALESCE(SUM(mismatched_count + missing_in_bank_count + missing_in_internal_count) FILTER (WHERE run_date::date = CURRENT_DATE), 0) AS mismatches,
+        COALESCE(SUM(matched_count) FILTER (WHERE run_date::date = CURRENT_DATE), 0) AS matched
+      FROM reconciliation_runs;
+    `),
+    pool.query<{
+      total_runs: string;
+      total_records: string;
+      mismatches: string;
+      matched: string;
+    }>(`
+      SELECT
+        COUNT(*) AS total_runs,
+        COALESCE(SUM(total_bank_records + total_internal_records), 0) AS total_records,
+        COALESCE(SUM(mismatched_count + missing_in_bank_count + missing_in_internal_count), 0) AS mismatches,
+        COALESCE(SUM(matched_count), 0) AS matched
+      FROM reconciliation_runs;
+    `),
+    pool.query<{
+      id: number;
+      run_date: Date;
+      bank_filename: string;
+      internal_filename: string;
+      total_bank_records: number;
+      total_internal_records: number;
+      matched_count: number;
+      mismatched_count: number;
+      missing_in_bank_count: number;
+      missing_in_internal_count: number;
+      status: string;
+    }>(`
+      SELECT id, run_date, bank_filename, internal_filename,
+             total_bank_records, total_internal_records,
+             matched_count, mismatched_count,
+             missing_in_bank_count, missing_in_internal_count,
+             status
+      FROM reconciliation_runs
+      ORDER BY run_date DESC
+      LIMIT 10;
+    `),
+  ]);
 
   const executionMs = Date.now() - start;
 
