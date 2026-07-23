@@ -1,0 +1,9 @@
+transaction_id,amount,currency,transaction_date,description,status
+TXN-001,150.00,USD,2026-07-20,Payment for Invoice #1001,settled
+TXN-002,89.50,USD,2026-07-20,Subscription renewal,settled
+TXN-003,2500.00,USD,2026-07-21,Enterprise license fee,settled
+TXN-004,45.00,USD,2026-07-21,Support ticket #4421,settled
+TXN-005,310.75,USD,2026-07-22,API usage charges,settled
+TXN-006,1200.00,USD,2026-07-22,Monthly retainer,settled
+TXN-007,78.20,USD,2026-07-22,Gateway fee,settled
+TXN-008,999.99,USD,2026-07-23,Platform subscription,settled

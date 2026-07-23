@@ -1,65 +1,196 @@
-import Image from "next/image";
+import Link from 'next/link';
+import { pool } from '@/lib/db';
+import { StatCard } from '@/components/StatCard';
+import { StatusChip } from '@/components/StatusChip';
+import { SqlPanel } from '@/components/SqlPanel';
 
-export default function Home() {
+export const revalidate = 0;
+
+const DASHBOARD_QUERY = `SELECT
+  run_date::date                                                          AS date,
+  bank_filename,
+  internal_filename,
+  (total_bank_records + total_internal_records)                           AS total_records,
+  matched_count,
+  (mismatched_count + missing_in_bank_count + missing_in_internal_count) AS issues,
+  ROUND(matched_count::numeric / NULLIF(total_bank_records + total_internal_records, 0) * 100, 1) AS match_pct,
+  status
+FROM reconciliation_runs
+ORDER BY run_date DESC
+LIMIT 10;`;
+
+export default async function DashboardPage() {
+  const start = Date.now();
+
+  // Query stats for today
+  const statsRes = await pool.query<{
+    runs_today: string;
+    total_records: string;
+    mismatches: string;
+    matched: string;
+  }>(`
+    SELECT
+      COUNT(*) FILTER (WHERE run_date::date = CURRENT_DATE) AS runs_today,
+      COALESCE(SUM(total_bank_records + total_internal_records) FILTER (WHERE run_date::date = CURRENT_DATE), 0) AS total_records,
+      COALESCE(SUM(mismatched_count + missing_in_bank_count + missing_in_internal_count) FILTER (WHERE run_date::date = CURRENT_DATE), 0) AS mismatches,
+      COALESCE(SUM(matched_count) FILTER (WHERE run_date::date = CURRENT_DATE), 0) AS matched
+    FROM reconciliation_runs;
+  `);
+
+  // Query overall totals if today is 0
+  const overallRes = await pool.query<{
+    total_runs: string;
+    total_records: string;
+    mismatches: string;
+    matched: string;
+  }>(`
+    SELECT
+      COUNT(*) AS total_runs,
+      COALESCE(SUM(total_bank_records + total_internal_records), 0) AS total_records,
+      COALESCE(SUM(mismatched_count + missing_in_bank_count + missing_in_internal_count), 0) AS mismatches,
+      COALESCE(SUM(matched_count), 0) AS matched
+    FROM reconciliation_runs;
+  `);
+
+  // Query recent runs
+  const recentRunsRes = await pool.query<{
+    id: number;
+    run_date: Date;
+    bank_filename: string;
+    internal_filename: string;
+    total_bank_records: number;
+    total_internal_records: number;
+    matched_count: number;
+    mismatched_count: number;
+    missing_in_bank_count: number;
+    missing_in_internal_count: number;
+    status: string;
+  }>(`
+    SELECT id, run_date, bank_filename, internal_filename,
+           total_bank_records, total_internal_records,
+           matched_count, mismatched_count,
+           missing_in_bank_count, missing_in_internal_count,
+           status
+    FROM reconciliation_runs
+    ORDER BY run_date DESC
+    LIMIT 10;
+  `);
+
+  const executionMs = Date.now() - start;
+
+  const todayStats = statsRes.rows[0];
+  const overallStats = overallRes.rows[0];
+
+  const runsCount = parseInt(todayStats.runs_today || '0', 10);
+  const totalRecords = parseInt(runsCount > 0 ? todayStats.total_records : overallStats.total_records, 10);
+  const mismatches = parseInt(runsCount > 0 ? todayStats.mismatches : overallStats.mismatches, 10);
+  const matched = parseInt(runsCount > 0 ? todayStats.matched : overallStats.matched, 10);
+  const matchRate = totalRecords > 0 ? ((matched / totalRecords) * 100).toFixed(1) + '%' : '100%';
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <div>
+          <h1 className="page-title">Operations Dashboard</h1>
+          <p className="page-subtitle">Overview of payment reconciliation runs & mismatch metrics</p>
+        </div>
+        <Link href="/upload" className="btn btn-primary">
+          + New Reconciliation Run
+        </Link>
+      </div>
+
+      {/* Top Stat Cards */}
+      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '32px' }}>
+        <StatCard
+          label={runsCount > 0 ? "Runs Today" : "Total Runs"}
+          value={runsCount > 0 ? runsCount : overallStats.total_runs}
+          subtext="Reconciliation batches"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+        <StatCard
+          label={runsCount > 0 ? "Processed Today" : "Total Processed"}
+          value={totalRecords.toLocaleString()}
+          subtext="Total transaction rows"
+        />
+        <StatCard
+          label={runsCount > 0 ? "Mismatches Today" : "Total Mismatches"}
+          value={mismatches.toLocaleString()}
+          subtext="Requires resolution"
+          variant={mismatches > 0 ? 'danger' : 'default'}
+        />
+        <StatCard
+          label="Match Rate"
+          value={matchRate}
+          subtext="Accuracy ratio"
+          variant="success"
+        />
+      </div>
+
+      {/* Recent Runs Section */}
+      <div style={{ marginBottom: '24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <h2 style={{ fontSize: '15px', fontWeight: 600 }}>Recent Reconciliation Runs</h2>
+          <Link href="/runs" style={{ fontSize: '12px', color: 'var(--accent)', textDecoration: 'none' }}>
+            View All Runs →
+          </Link>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div style={{ overflowX: 'auto', border: '1px solid var(--border)', borderRadius: '4px' }}>
+          <table>
+            <thead>
+              <tr>
+                <th>Run #</th>
+                <th>Date</th>
+                <th>Bank File</th>
+                <th>Internal File</th>
+                <th>Bank Recs</th>
+                <th>Internal Recs</th>
+                <th>Matched</th>
+                <th>Issues</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentRunsRes.rows.length === 0 ? (
+                <tr>
+                  <td colSpan={9} style={{ textAlign: 'center', padding: '32px', color: 'var(--text-secondary)' }}>
+                    No reconciliation runs executed yet. Upload CSV files to begin.
+                  </td>
+                </tr>
+              ) : (
+                recentRunsRes.rows.map((run) => {
+                  const issues = run.mismatched_count + run.missing_in_bank_count + run.missing_in_internal_count;
+                  return (
+                    <tr key={run.id}>
+                      <td>
+                        <Link
+                          href={`/runs/${run.id}`}
+                          style={{ color: 'var(--accent)', fontWeight: 600, textDecoration: 'none' }}
+                        >
+                          #{run.id}
+                        </Link>
+                      </td>
+                      <td style={{ color: 'var(--text-secondary)' }}>
+                        {new Date(run.run_date).toISOString().replace('T', ' ').slice(0, 16)}
+                      </td>
+                      <td style={{ fontFamily: 'monospace' }}>{run.bank_filename}</td>
+                      <td style={{ fontFamily: 'monospace' }}>{run.internal_filename}</td>
+                      <td>{run.total_bank_records}</td>
+                      <td>{run.total_internal_records}</td>
+                      <td style={{ color: 'var(--success)' }}>{run.matched_count}</td>
+                      <td style={{ color: issues > 0 ? 'var(--warning)' : 'inherit' }}>{issues}</td>
+                      <td>
+                        <StatusChip status={run.status} />
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
         </div>
-      </main>
+      </div>
+
+      <SqlPanel query={DASHBOARD_QUERY} executionMs={executionMs} />
     </div>
   );
 }
