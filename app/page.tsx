@@ -146,12 +146,13 @@ export default async function DashboardPage() {
                 <th>Matched</th>
                 <th>Issues</th>
                 <th>Status</th>
+                <th style={{ textAlign: 'right' }}>Action</th>
               </tr>
             </thead>
             <tbody>
               {recentRunsRes.rows.length === 0 ? (
                 <tr>
-                  <td colSpan={9} style={{ textAlign: 'center', padding: '32px', color: 'var(--text-secondary)' }}>
+                  <td colSpan={10} style={{ textAlign: 'center', padding: '32px', color: 'var(--text-secondary)' }}>
                     No reconciliation runs executed yet. Upload CSV files to begin.
                   </td>
                 </tr>
@@ -163,7 +164,7 @@ export default async function DashboardPage() {
                       <td>
                         <Link
                           href={`/runs/${run.id}`}
-                          style={{ color: 'var(--accent)', fontWeight: 600, textDecoration: 'none' }}
+                          style={{ color: 'var(--text-primary)', fontWeight: 600, textDecoration: 'none' }}
                         >
                           #{run.id}
                         </Link>
@@ -179,6 +180,21 @@ export default async function DashboardPage() {
                       <td style={{ color: issues > 0 ? 'var(--warning)' : 'inherit' }}>{issues}</td>
                       <td>
                         <StatusChip status={run.status} />
+                      </td>
+                      <td style={{ textAlign: 'right' }}>
+                        <Link
+                          href={`/runs/${run.id}`}
+                          className="btn btn-secondary"
+                          style={{
+                            fontSize: '11px',
+                            padding: '3px 10px',
+                            borderColor: 'var(--accent)',
+                            color: 'var(--accent)',
+                            fontWeight: 600,
+                          }}
+                        >
+                          View Details →
+                        </Link>
                       </td>
                     </tr>
                   );

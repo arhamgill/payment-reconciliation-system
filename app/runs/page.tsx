@@ -65,12 +65,13 @@ export default async function AllRunsPage() {
               <th>Missing (Internal)</th>
               <th>Match Rate</th>
               <th>Status</th>
+              <th style={{ textAlign: 'right' }}>Action</th>
             </tr>
           </thead>
           <tbody>
             {res.rows.length === 0 ? (
               <tr>
-                <td colSpan={12} style={{ textAlign: 'center', padding: '32px', color: 'var(--text-secondary)' }}>
+                <td colSpan={13} style={{ textAlign: 'center', padding: '32px', color: 'var(--text-secondary)' }}>
                   No reconciliation runs executed yet.
                 </td>
               </tr>
@@ -80,7 +81,7 @@ export default async function AllRunsPage() {
                   <td>
                     <Link
                       href={`/runs/${run.id}`}
-                      style={{ color: 'var(--accent)', fontWeight: 600, textDecoration: 'none' }}
+                      style={{ color: 'var(--text-primary)', fontWeight: 600, textDecoration: 'none' }}
                     >
                       #{run.id}
                     </Link>
@@ -107,6 +108,21 @@ export default async function AllRunsPage() {
                   </td>
                   <td>
                     <StatusChip status={run.status} />
+                  </td>
+                  <td style={{ textAlign: 'right' }}>
+                    <Link
+                      href={`/runs/${run.id}`}
+                      className="btn btn-secondary"
+                      style={{
+                        fontSize: '11px',
+                        padding: '3px 10px',
+                        borderColor: 'var(--accent)',
+                        color: 'var(--accent)',
+                        fontWeight: 600,
+                      }}
+                    >
+                      View Details →
+                    </Link>
                   </td>
                 </tr>
               ))

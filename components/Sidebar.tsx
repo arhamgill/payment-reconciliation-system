@@ -38,22 +38,22 @@ export const Sidebar: React.FC = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px', padding: '0 4px' }}>
           <div
             style={{
-              width: '24px',
-              height: '24px',
+              width: '26px',
+              height: '26px',
               backgroundColor: 'var(--accent)',
-              borderRadius: '4px',
+              borderRadius: '5px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               color: '#ffffff',
               fontWeight: 700,
-              fontSize: '12px',
+              fontSize: '13px',
             }}
           >
-            PR
+            R
           </div>
-          <span style={{ fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)' }}>
-            PayReconcile
+          <span style={{ fontWeight: 700, fontSize: '16px', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+            Resolver
           </span>
           <span
             style={{
@@ -66,7 +66,7 @@ export const Sidebar: React.FC = () => {
               border: '1px solid var(--border)',
             }}
           >
-            INTERNAL
+            OPS
           </span>
         </div>
 
@@ -102,8 +102,8 @@ export const Sidebar: React.FC = () => {
 
       {/* Footer info */}
       <div style={{ padding: '8px 4px', borderTop: '1px solid var(--border)', fontSize: '11px', color: 'var(--text-muted)' }}>
-        PayReconcile v1.0.0<br />
-        Fintech Operations Admin
+        Resolver v1.0.0<br />
+        Fintech Reconciliation Engine
       </div>
     </aside>
   );

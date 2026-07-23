@@ -3,8 +3,11 @@ import './globals.css';
 import { Sidebar } from '@/components/Sidebar';
 
 export const metadata: Metadata = {
-  title: 'PayReconcile — Payment Reconciliation System',
-  description: 'Internal fintech payment reconciliation & ops portal',
+  title: 'Resolver — Payment Reconciliation System',
+  description: 'Enterprise fintech payment reconciliation & discrepancy resolution engine',
+  icons: {
+    icon: '/icon.svg',
+  },
 };
 
 export default function RootLayout({

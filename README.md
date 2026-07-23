@@ -1,4 +1,4 @@
-# 💳 PayReconcile — Payment Reconciliation System
+# 💳 Resolver — Payment Reconciliation System
 
 An internal fintech product operations tool designed to automate batch payment reconciliation, identify financial discrepancies between bank statements and internal ledgers, provide an audit trail for Ops Teams, and expose an interactive SQL engine visibility layer.
 
