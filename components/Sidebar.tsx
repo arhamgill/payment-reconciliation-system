@@ -73,8 +73,8 @@ export const Sidebar: React.FC = () => {
             >
               R
             </div>
-            <span style={{ fontWeight: 600, fontSize: '13.5px', color: '#ffffff', letterSpacing: '-0.01em' }}>
-              resolver.dev
+            <span style={{ fontWeight: 600, fontSize: '14px', color: '#ffffff', letterSpacing: '-0.01em' }}>
+              Resolver
             </span>
           </div>
           <ChevronsUpDown size={14} style={{ color: '#666666' }} />
@@ -111,7 +111,7 @@ export const Sidebar: React.FC = () => {
         </nav>
       </div>
 
-      {/* Footer Profile Info (Resend style bottom item) */}
+      {/* Footer Profile Info */}
       <div
         style={{
           display: 'flex',
@@ -150,12 +150,13 @@ export const Sidebar: React.FC = () => {
               textOverflow: 'ellipsis',
             }}
           >
-            ops.admin@resolver.dev
+            Ops Admin
           </span>
         </div>
       </div>
     </aside>
   );
 };
+
 
 
