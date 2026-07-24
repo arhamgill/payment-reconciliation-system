@@ -3,17 +3,26 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import {
+  LayoutDashboard,
+  UploadCloud,
+  History,
+  Search,
+  AlertTriangle,
+  Terminal,
+  ShieldCheck,
+} from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
   const pathname = usePathname();
 
   const navItems = [
-    { label: 'Dashboard', href: '/', icon: '📊' },
-    { label: 'Upload CSV', href: '/upload', icon: '⬆️' },
-    { label: 'All Runs', href: '/runs', icon: '🗂️' },
-    { label: 'Search', href: '/search', icon: '🔍' },
-    { label: 'Issues', href: '/issues', icon: '⚠️' },
-    { label: 'SQL Workbench', href: '/sql', icon: '</>' },
+    { label: 'Dashboard', href: '/', icon: LayoutDashboard },
+    { label: 'Upload CSV', href: '/upload', icon: UploadCloud },
+    { label: 'All Runs', href: '/runs', icon: History },
+    { label: 'Search', href: '/search', icon: Search },
+    { label: 'Issues', href: '/issues', icon: AlertTriangle },
+    { label: 'SQL Workbench', href: '/sql', icon: Terminal },
   ];
 
   return (
@@ -29,30 +38,28 @@ export const Sidebar: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: '16px',
+        padding: '20px 14px',
         zIndex: 40,
       }}
     >
       <div>
         {/* Brand Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px', padding: '0 4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '28px', padding: '0 8px' }}>
           <div
             style={{
-              width: '26px',
-              height: '26px',
-              backgroundColor: 'var(--accent)',
-              borderRadius: '5px',
+              width: '28px',
+              height: '28px',
+              backgroundColor: '#ffffff',
+              borderRadius: '6px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#ffffff',
-              fontWeight: 700,
-              fontSize: '13px',
+              color: '#000000',
             }}
           >
-            R
+            <ShieldCheck size={16} strokeWidth={2.5} />
           </div>
-          <span style={{ fontWeight: 700, fontSize: '16px', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+          <span style={{ fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
             Resolver
           </span>
           <span
@@ -60,10 +67,11 @@ export const Sidebar: React.FC = () => {
               fontSize: '10px',
               fontWeight: 600,
               backgroundColor: 'var(--bg-elevated)',
-              color: 'var(--text-secondary)',
-              padding: '1px 5px',
-              borderRadius: '3px',
+              color: 'var(--text-muted)',
+              padding: '2px 6px',
+              borderRadius: '4px',
               border: '1px solid var(--border)',
+              letterSpacing: '0.05em',
             }}
           >
             OPS
@@ -71,8 +79,9 @@ export const Sidebar: React.FC = () => {
         </div>
 
         {/* Navigation Items */}
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
           {navItems.map((item) => {
+            const Icon = item.icon;
             const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
             return (
               <Link
@@ -83,16 +92,17 @@ export const Sidebar: React.FC = () => {
                   alignItems: 'center',
                   gap: '10px',
                   padding: '8px 12px',
-                  borderRadius: '4px',
+                  borderRadius: '6px',
                   fontSize: '13px',
-                  fontWeight: isActive ? 600 : 400,
-                  color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
+                  fontWeight: isActive ? 500 : 400,
+                  color: isActive ? '#ffffff' : 'var(--text-secondary)',
                   backgroundColor: isActive ? 'var(--bg-elevated)' : 'transparent',
                   textDecoration: 'none',
                   border: isActive ? '1px solid var(--border)' : '1px solid transparent',
+                  transition: 'all 0.15s ease',
                 }}
               >
-                <span style={{ fontSize: '14px', width: '18px', textAlign: 'center' }}>{item.icon}</span>
+                <Icon size={16} strokeWidth={isActive ? 2 : 1.75} style={{ color: isActive ? '#ffffff' : 'var(--text-secondary)' }} />
                 {item.label}
               </Link>
             );
@@ -101,10 +111,11 @@ export const Sidebar: React.FC = () => {
       </div>
 
       {/* Footer info */}
-      <div style={{ padding: '8px 4px', borderTop: '1px solid var(--border)', fontSize: '11px', color: 'var(--text-muted)' }}>
-        Resolver v1.0.0<br />
-        Fintech Reconciliation Engine
+      <div style={{ padding: '12px 8px', borderTop: '1px solid var(--border-subtle)', fontSize: '11px', color: 'var(--text-muted)', lineHeight: '1.4' }}>
+        <div style={{ fontWeight: 500, color: 'var(--text-secondary)' }}>Resolver Engine v1.0</div>
+        <div>Automated Payment Reconciliation</div>
       </div>
     </aside>
   );
 };
+

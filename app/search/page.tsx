@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { ReconciliationTable, ReconciliationRow } from '@/components/ReconciliationTable';
 import { SqlPanel } from '@/components/SqlPanel';
+import { Search } from 'lucide-react';
 
 export default function SearchPage() {
   const [txnId, setTxnId] = useState('');
@@ -90,16 +91,16 @@ WHERE 1=1`;
         style={{
           backgroundColor: 'var(--bg-surface)',
           border: '1px solid var(--border)',
-          borderRadius: '4px',
+          borderRadius: '8px',
           padding: '20px',
-          marginBottom: '24px',
+          marginBottom: '28px',
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
           gap: '16px',
         }}
       >
         <div>
-          <label className="section-label" style={{ display: 'block', marginBottom: '4px' }}>
+          <label className="section-label" style={{ display: 'block', marginBottom: '6px' }}>
             Transaction Reference
           </label>
           <input
@@ -112,7 +113,7 @@ WHERE 1=1`;
         </div>
 
         <div>
-          <label className="section-label" style={{ display: 'block', marginBottom: '4px' }}>
+          <label className="section-label" style={{ display: 'block', marginBottom: '6px' }}>
             Match Status
           </label>
           <select value={status} onChange={(e) => setStatus(e.target.value)} style={{ width: '100%' }}>
@@ -125,7 +126,7 @@ WHERE 1=1`;
         </div>
 
         <div>
-          <label className="section-label" style={{ display: 'block', marginBottom: '4px' }}>
+          <label className="section-label" style={{ display: 'block', marginBottom: '6px' }}>
             Resolution State
           </label>
           <select
@@ -140,7 +141,7 @@ WHERE 1=1`;
         </div>
 
         <div>
-          <label className="section-label" style={{ display: 'block', marginBottom: '4px' }}>
+          <label className="section-label" style={{ display: 'block', marginBottom: '6px' }}>
             From Date
           </label>
           <input
@@ -152,7 +153,7 @@ WHERE 1=1`;
         </div>
 
         <div>
-          <label className="section-label" style={{ display: 'block', marginBottom: '4px' }}>
+          <label className="section-label" style={{ display: 'block', marginBottom: '6px' }}>
             To Date
           </label>
           <input
@@ -164,16 +165,22 @@ WHERE 1=1`;
         </div>
 
         <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-          <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: '100%', height: '33px' }}>
-            {loading ? 'Searching...' : '🔍 Search Database'}
+          <button type="submit" className="btn btn-primary" disabled={loading} style={{ width: '100%', height: '37px' }}>
+            {loading ? (
+              'Searching...'
+            ) : (
+              <>
+                <Search size={15} /> Search Database
+              </>
+            )}
           </button>
         </div>
       </form>
 
       {/* Results */}
       {searched && (
-        <div style={{ marginBottom: '24px' }}>
-          <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '12px' }}>
+        <div style={{ marginBottom: '28px' }}>
+          <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '12px', color: 'var(--text-primary)' }}>
             Search Results ({results.length} records found)
           </h2>
           <ReconciliationTable rows={results} />
@@ -184,3 +191,4 @@ WHERE 1=1`;
     </div>
   );
 }
+

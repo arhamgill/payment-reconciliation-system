@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { ReconciliationTable, ReconciliationRow } from '@/components/ReconciliationTable';
 import { deleteRunAction } from '@/app/actions/delete-run';
+import { Download, Trash2 } from 'lucide-react';
 
 interface SingleRunClientProps {
   runId: number;
@@ -51,13 +52,13 @@ export const SingleRunClient: React.FC<SingleRunClientProps> = ({ runId, rows })
     missing_in_internal: rows.filter((r) => r.match_status === 'missing_in_internal').length,
   };
 
-  const filterButtons: { label: string; key: FilterType }[] = [
-    { label: `All (${counts.ALL})`, key: 'ALL' },
-    { label: `Matched (${counts.matched})`, key: 'matched' },
-    { label: `Amount Mismatches (${counts.amount_mismatch})`, key: 'amount_mismatch' },
-    { label: `Date Mismatches (${counts.date_mismatch})`, key: 'date_mismatch' },
-    { label: `Missing Bank (${counts.missing_in_bank})`, key: 'missing_in_bank' },
-    { label: `Missing Internal (${counts.missing_in_internal})`, key: 'missing_in_internal' },
+  const filterButtons: { label: string; key: FilterType; count: number }[] = [
+    { label: 'All', key: 'ALL', count: counts.ALL },
+    { label: 'Matched', key: 'matched', count: counts.matched },
+    { label: 'Amount Mismatches', key: 'amount_mismatch', count: counts.amount_mismatch },
+    { label: 'Date Mismatches', key: 'date_mismatch', count: counts.date_mismatch },
+    { label: 'Missing Bank', key: 'missing_in_bank', count: counts.missing_in_bank },
+    { label: 'Missing Internal', key: 'missing_in_internal', count: counts.missing_in_internal },
   ];
 
   return (
@@ -70,7 +71,7 @@ export const SingleRunClient: React.FC<SingleRunClientProps> = ({ runId, rows })
           alignItems: 'center',
           flexWrap: 'wrap',
           gap: '12px',
-          marginBottom: '16px',
+          marginBottom: '20px',
         }}
       >
         {/* Filter Bar */}
@@ -82,17 +83,29 @@ export const SingleRunClient: React.FC<SingleRunClientProps> = ({ runId, rows })
                 key={btn.key}
                 type="button"
                 onClick={() => setFilter(btn.key)}
-                className="btn btn-secondary"
+                className="btn"
                 style={{
                   fontSize: '12px',
-                  padding: '4px 10px',
+                  padding: '5px 12px',
+                  borderRadius: '6px',
                   backgroundColor: isActive ? 'var(--bg-elevated)' : 'transparent',
-                  borderColor: isActive ? 'var(--accent)' : 'var(--border)',
-                  color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)',
-                  fontWeight: isActive ? 600 : 400,
+                  border: isActive ? '1px solid var(--border)' : '1px solid transparent',
+                  color: isActive ? '#ffffff' : 'var(--text-secondary)',
+                  fontWeight: isActive ? 500 : 400,
                 }}
               >
-                {btn.label}
+                {btn.label}{' '}
+                <span
+                  style={{
+                    fontSize: '10px',
+                    padding: '1px 6px',
+                    borderRadius: '9999px',
+                    backgroundColor: isActive ? 'var(--border)' : 'var(--bg-elevated)',
+                    color: isActive ? '#ffffff' : 'var(--text-muted)',
+                  }}
+                >
+                  {btn.count}
+                </span>
               </button>
             );
           })}
@@ -104,9 +117,9 @@ export const SingleRunClient: React.FC<SingleRunClientProps> = ({ runId, rows })
             href={`/api/export/${runId}`}
             download
             className="btn btn-secondary"
-            style={{ fontSize: '12px', padding: '6px 12px', textDecoration: 'none' }}
+            style={{ fontSize: '12px', padding: '6px 14px', textDecoration: 'none' }}
           >
-            📥 Export CSV
+            <Download size={14} /> Export CSV
           </a>
           <button
             type="button"
@@ -115,13 +128,13 @@ export const SingleRunClient: React.FC<SingleRunClientProps> = ({ runId, rows })
             className="btn btn-ghost"
             style={{ fontSize: '12px', padding: '6px 12px', color: 'var(--danger)' }}
           >
-            {deleting ? 'Deleting...' : '🗑️ Delete Run'}
+            <Trash2 size={14} /> {deleting ? 'Deleting...' : 'Delete Run'}
           </button>
         </div>
       </div>
 
       <div style={{ marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '12px' }}>
+        <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '12px', color: 'var(--text-primary)' }}>
           Reconciliation Results ({filteredRows.length} shown)
         </h2>
         <ReconciliationTable rows={filteredRows} />
@@ -129,3 +142,4 @@ export const SingleRunClient: React.FC<SingleRunClientProps> = ({ runId, rows })
     </div>
   );
 };
+

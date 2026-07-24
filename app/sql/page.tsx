@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { SqlEditor } from '@/components/SqlEditor';
+import { Play, Check, AlertCircle } from 'lucide-react';
 
 const SQL_TEMPLATES = [
   {
@@ -202,12 +203,18 @@ export default function SqlWorkbenchPage() {
           disabled={loading}
           style={{ padding: '8px 20px' }}
         >
-          {loading ? 'Executing Query...' : '▶ Run Query'}
+          {loading ? (
+            'Executing Query...'
+          ) : (
+            <>
+              <Play size={14} fill="currentColor" /> Run Query
+            </>
+          )}
         </button>
 
         {executionMs !== null && rowCount !== null && !error && (
-          <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-            ✓ {rowCount} rows returned · Executed in {executionMs}ms
+          <div style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Check size={14} style={{ color: 'var(--success)' }} /> {rowCount} rows returned · Executed in {executionMs}ms
           </div>
         )}
       </div>
@@ -220,21 +227,24 @@ export default function SqlWorkbenchPage() {
             border: '1px solid var(--danger)',
             color: '#f87171',
             padding: '12px 16px',
-            borderRadius: '4px',
+            borderRadius: '6px',
             marginBottom: '24px',
             fontSize: '13px',
-            fontFamily: 'monospace',
+            fontFamily: "'Fira Code', monospace",
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
           }}
         >
-          ❌ {error}
+          <AlertCircle size={16} /> {error}
         </div>
       )}
 
       {/* Results Table */}
       {columns.length > 0 && (
         <div style={{ marginBottom: '32px' }}>
-          <h2 style={{ fontSize: '14px', fontWeight: 600, marginBottom: '12px' }}>Query Results</h2>
-          <div style={{ overflowX: 'auto', border: '1px solid var(--border)', borderRadius: '4px', maxHeight: '500px' }}>
+          <h2 style={{ fontSize: '14px', fontWeight: 600, marginBottom: '12px', color: 'var(--text-primary)' }}>Query Results</h2>
+          <div style={{ overflowX: 'auto', border: '1px solid var(--border)', borderRadius: '8px', maxHeight: '500px', backgroundColor: 'var(--bg-surface)' }}>
             <table>
               <thead>
                 <tr>
@@ -248,7 +258,7 @@ export default function SqlWorkbenchPage() {
               <tbody>
                 {rows.length === 0 ? (
                   <tr>
-                    <td colSpan={columns.length} style={{ textAlign: 'center', padding: '24px', color: 'var(--text-secondary)' }}>
+                    <td colSpan={columns.length} style={{ textAlign: 'center', padding: '24px', color: 'var(--text-muted)' }}>
                       Query returned 0 rows.
                     </td>
                   </tr>
@@ -263,7 +273,7 @@ export default function SqlWorkbenchPage() {
                           else rendered = String(val);
                         }
                         return (
-                          <td key={cIdx} style={{ fontFamily: 'monospace', fontSize: '12px', whiteSpace: 'nowrap' }}>
+                          <td key={cIdx} style={{ fontFamily: "'Fira Code', monospace", fontSize: '12px', whiteSpace: 'nowrap', color: 'var(--text-primary)' }}>
                             {rendered}
                           </td>
                         );
@@ -279,7 +289,7 @@ export default function SqlWorkbenchPage() {
 
       {/* Query History */}
       {history.length > 0 && (
-        <div style={{ borderTop: '1px solid var(--border)', paddingTop: '20px' }}>
+        <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '20px' }}>
           <h3 className="section-label" style={{ marginBottom: '12px' }}>
             Recent Query History
           </h3>
@@ -291,15 +301,16 @@ export default function SqlWorkbenchPage() {
                 style={{
                   backgroundColor: 'var(--bg-surface)',
                   border: '1px solid var(--border)',
-                  borderRadius: '4px',
+                  borderRadius: '6px',
                   padding: '8px 12px',
                   fontSize: '12px',
-                  fontFamily: 'monospace',
+                  fontFamily: "'Fira Code', monospace",
                   cursor: 'pointer',
                   color: 'var(--text-secondary)',
                   whiteSpace: 'nowrap',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
+                  transition: 'all 0.15s ease',
                 }}
                 title="Click to load into editor"
               >
@@ -312,3 +323,4 @@ export default function SqlWorkbenchPage() {
     </div>
   );
 }
+

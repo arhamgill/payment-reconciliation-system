@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
+import { UploadCloud, FileCheck, FileSpreadsheet } from 'lucide-react';
 
 interface FileDropZoneProps {
   label: string;
@@ -48,14 +49,18 @@ export const FileDropZone: React.FC<FileDropZoneProps> = ({
       onDrop={handleDrop}
       onClick={() => inputRef.current?.click()}
       style={{
-        border: `2px dashed ${isDragOver ? 'var(--accent)' : 'var(--border)'}`,
-        borderRadius: '4px',
-        padding: '32px 16px',
+        border: `1.5px dashed ${isDragOver ? '#ffffff' : 'var(--border)'}`,
+        borderRadius: '8px',
+        padding: '32px 20px',
         textAlign: 'center',
-        backgroundColor: isDragOver ? 'var(--bg-elevated)' : 'var(--bg-surface)',
+        backgroundColor: isDragOver ? 'var(--bg-elevated)' : 'var(--bg-card)',
         cursor: 'pointer',
-        transition: 'border-color 0.15s ease',
+        transition: 'all 0.15s ease',
         flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
       <input
@@ -70,19 +75,39 @@ export const FileDropZone: React.FC<FileDropZoneProps> = ({
           }
         }}
       />
-      <div style={{ fontSize: '24px', marginBottom: '8px', color: 'var(--text-secondary)' }}>
-        📁
+      
+      <div
+        style={{
+          width: '40px',
+          height: '40px',
+          borderRadius: '8px',
+          backgroundColor: 'var(--bg-elevated)',
+          border: '1px solid var(--border)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: '12px',
+          color: selectedFile ? 'var(--success)' : 'var(--text-secondary)',
+        }}
+      >
+        {selectedFile ? <FileCheck size={20} /> : <UploadCloud size={20} />}
       </div>
-      <div style={{ fontWeight: 600, fontSize: '14px', marginBottom: '4px' }}>{label}</div>
+
+      <div style={{ fontWeight: 600, fontSize: '14px', color: 'var(--text-primary)', marginBottom: '4px' }}>
+        {label}
+      </div>
+
       {selectedFile ? (
-        <div style={{ color: 'var(--success)', fontSize: '13px', fontWeight: 500 }}>
-          ✓ {selectedFile.name} ({(selectedFile.size / 1024).toFixed(1)} KB)
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--success)', fontSize: '12px', fontWeight: 500 }}>
+          <FileSpreadsheet size={14} />
+          {selectedFile.name} ({(selectedFile.size / 1024).toFixed(1)} KB)
         </div>
       ) : (
-        <div style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>
+        <div style={{ color: 'var(--text-muted)', fontSize: '12px' }}>
           Drop {label.toLowerCase()} here or click to browse (.csv)
         </div>
       )}
     </div>
   );
 };
+

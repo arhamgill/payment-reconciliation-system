@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FileDropZone } from '@/components/FileDropZone';
 import { uploadAction } from '@/app/actions/upload';
+import { Zap, AlertCircle, Info } from 'lucide-react';
 
 export default function UploadPage() {
   const router = useRouter();
@@ -15,7 +16,7 @@ export default function UploadPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!bankFile || !internalFile) {
-      setError('Please select both Bank and Internal CSV files.');
+      setError('Please select both Bank Statement and Internal Ledger CSV files.');
       return;
     }
 
@@ -51,10 +52,10 @@ export default function UploadPage() {
   };
 
   return (
-    <div style={{ maxWidth: '800px' }}>
-      <h1 className="page-title">Upload CSV Files</h1>
+    <div style={{ maxWidth: '820px' }}>
+      <h1 className="page-title">Upload Reconciliation Data</h1>
       <p className="page-subtitle">
-        Upload matching bank statement CSV and internal system CSV to execute automated payment reconciliation.
+        Upload bank statement CSV and internal ledger CSV to execute automated payment reconciliation.
       </p>
 
       {error && (
@@ -64,12 +65,15 @@ export default function UploadPage() {
             border: '1px solid var(--danger)',
             color: '#f87171',
             padding: '12px 16px',
-            borderRadius: '4px',
-            marginBottom: '20px',
+            borderRadius: '6px',
+            marginBottom: '24px',
             fontSize: '13px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
           }}
         >
-          ⚠️ {error}
+          <AlertCircle size={16} /> {error}
         </div>
       )}
 
@@ -91,22 +95,22 @@ export default function UploadPage() {
           style={{
             backgroundColor: 'var(--bg-surface)',
             border: '1px solid var(--border)',
-            padding: '16px',
-            borderRadius: '4px',
-            marginBottom: '24px',
+            padding: '16px 20px',
+            borderRadius: '8px',
+            marginBottom: '28px',
             fontSize: '12px',
             color: 'var(--text-secondary)',
           }}
         >
-          <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '4px' }}>
-            Expected CSV Format Header:
+          <div style={{ fontWeight: 500, color: 'var(--text-primary)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Info size={14} /> Expected CSV Schema Format:
           </div>
-          <code style={{ fontFamily: 'monospace', color: 'var(--accent)' }}>
+          <code style={{ fontFamily: "'Fira Code', monospace", color: '#ffffff', backgroundColor: 'var(--bg-base)', padding: '6px 10px', borderRadius: '4px', display: 'block', border: '1px solid var(--border-subtle)', marginBottom: '8px' }}>
             transaction_id, amount, currency, transaction_date, description, status
           </code>
-          <div style={{ marginTop: '8px' }}>
-            Tip: You can use the sample files in <code>/sample-data/bank_sample.csv</code> and{' '}
-            <code>/sample-data/internal_sample.csv</code> for testing.
+          <div>
+            Tip: Test sample files available at <code style={{ fontFamily: "'Fira Code', monospace" }}>/sample-data/bank_sample.csv</code> and{' '}
+            <code style={{ fontFamily: "'Fira Code', monospace" }}>/sample-data/internal_sample.csv</code>.
           </div>
         </div>
 
@@ -116,9 +120,16 @@ export default function UploadPage() {
           disabled={loading || !bankFile || !internalFile}
           style={{ padding: '10px 24px', fontSize: '14px' }}
         >
-          {loading ? 'Processing & Reconciling...' : '⚡ Run Automated Reconciliation'}
+          {loading ? (
+            'Processing & Reconciling...'
+          ) : (
+            <>
+              <Zap size={16} /> Run Automated Reconciliation
+            </>
+          )}
         </button>
       </form>
     </div>
   );
 }
+

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { StatusChip } from './StatusChip';
 import { ResolveModal } from './ResolveModal';
+import { Check, ArrowRight } from 'lucide-react';
 
 export interface ReconciliationRow {
   id: number;
@@ -39,7 +40,7 @@ export const ReconciliationTable: React.FC<ReconciliationTableProps> = ({ rows }
 
   return (
     <>
-      <div style={{ overflowX: 'auto', border: '1px solid var(--border)', borderRadius: '4px' }}>
+      <div style={{ overflowX: 'auto', border: '1px solid var(--border)', borderRadius: '8px', backgroundColor: 'var(--bg-surface)' }}>
         <table>
           <thead>
             <tr>
@@ -51,14 +52,14 @@ export const ReconciliationTable: React.FC<ReconciliationTableProps> = ({ rows }
               <th>Bank Date</th>
               <th>Internal Date</th>
               <th>Resolved</th>
-              <th>Action</th>
+              <th style={{ textAlign: 'right' }}>Action</th>
             </tr>
           </thead>
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={9} style={{ textAlign: 'center', padding: '24px', color: 'var(--text-secondary)' }}>
-                  No transaction records found matching filter.
+                <td colSpan={9} style={{ textAlign: 'center', padding: '32px', color: 'var(--text-muted)' }}>
+                  No transaction records found matching filter criteria.
                 </td>
               </tr>
             ) : (
@@ -74,7 +75,9 @@ export const ReconciliationTable: React.FC<ReconciliationTableProps> = ({ rows }
 
                 return (
                   <tr key={row.id}>
-                    <td style={{ fontFamily: 'monospace', fontWeight: 600 }}>{row.transaction_id}</td>
+                    <td style={{ fontFamily: "'Fira Code', monospace", fontWeight: 500, color: 'var(--text-primary)' }}>
+                      {row.transaction_id}
+                    </td>
                     <td>
                       <StatusChip
                         status={row.match_status}
@@ -91,47 +94,49 @@ export const ReconciliationTable: React.FC<ReconciliationTableProps> = ({ rows }
                         color:
                           row.amount_diff && parseFloat(String(row.amount_diff)) !== 0
                             ? 'var(--warning)'
-                            : 'inherit',
-                        fontFamily: 'monospace',
+                            : 'var(--text-primary)',
+                        fontFamily: "'Fira Code', monospace",
                       }}
                     >
                       {formatAmount(row.amount_diff)}
                     </td>
-                    <td style={{ color: isDateMismatch ? '#fbbf24' : 'inherit', fontWeight: isDateMismatch ? 600 : 400 }}>
+                    <td style={{ color: isDateMismatch ? 'var(--warning)' : 'var(--text-secondary)' }}>
                       {formattedBankDate}
                     </td>
-                    <td style={{ color: isDateMismatch ? '#fbbf24' : 'inherit', fontWeight: isDateMismatch ? 600 : 400 }}>
+                    <td style={{ color: isDateMismatch ? 'var(--warning)' : 'var(--text-secondary)' }}>
                       {formattedInternalDate}
                     </td>
-                  <td>
-                    {row.resolved ? (
-                      <span style={{ color: 'var(--success)', fontSize: '12px' }}>✓ Resolved</span>
-                    ) : (
-                      <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>—</span>
-                    )}
-                  </td>
-                  <td>
-                    {!row.resolved && row.match_status !== 'matched' ? (
-                      <button
-                        type="button"
-                        className="btn btn-secondary"
-                        style={{ fontSize: '11px', padding: '2px 8px' }}
-                        onClick={() => setActiveResolve({ id: row.id, transactionId: row.transaction_id })}
-                      >
-                        Resolve
-                      </button>
-                    ) : row.notes ? (
-                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }} title={row.notes}>
-                        Notes: {row.notes.slice(0, 15)}...
-                      </span>
-                    ) : (
-                      '—'
-                    )}
-                  </td>
-                </tr>
-              );
-            })
-          )}
+                    <td>
+                      {row.resolved ? (
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: 'var(--success)', fontSize: '12px', fontWeight: 500 }}>
+                          <Check size={14} /> Resolved
+                        </span>
+                      ) : (
+                        <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>—</span>
+                      )}
+                    </td>
+                    <td style={{ textAlign: 'right' }}>
+                      {!row.resolved && row.match_status !== 'matched' ? (
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          style={{ fontSize: '11px', padding: '3px 10px' }}
+                          onClick={() => setActiveResolve({ id: row.id, transactionId: row.transaction_id })}
+                        >
+                          Resolve <ArrowRight size={12} />
+                        </button>
+                      ) : row.notes ? (
+                        <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }} title={row.notes}>
+                          Notes: {row.notes.slice(0, 15)}...
+                        </span>
+                      ) : (
+                        '—'
+                      )}
+                    </td>
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
       </div>
@@ -146,3 +151,4 @@ export const ReconciliationTable: React.FC<ReconciliationTableProps> = ({ rows }
     </>
   );
 };
+

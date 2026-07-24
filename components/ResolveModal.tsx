@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { resolveAction } from '@/app/actions/resolve';
+import { CheckCircle, X } from 'lucide-react';
 
 interface ResolveModalProps {
   resultId: number;
@@ -39,7 +40,8 @@ export const ResolveModal: React.FC<ResolveModalProps> = ({
       style={{
         position: 'fixed',
         inset: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        backgroundColor: 'rgba(0, 0, 0, 0.75)',
+        backdropFilter: 'blur(4px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -50,25 +52,38 @@ export const ResolveModal: React.FC<ResolveModalProps> = ({
         style={{
           backgroundColor: 'var(--bg-surface)',
           border: '1px solid var(--border)',
-          borderRadius: '6px',
+          borderRadius: '10px',
           width: '480px',
           maxWidth: '90vw',
           padding: '24px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '16px',
+          gap: '20px',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5)',
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ fontSize: '16px', fontWeight: 600 }}>Resolve Discrepancy</h3>
-          <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontFamily: 'monospace' }}>
-            {transactionId}
-          </span>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <h3 style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)' }}>
+              Resolve Discrepancy
+            </h3>
+            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+              Transaction: <span style={{ fontFamily: "'Fira Code', monospace", color: '#ffffff' }}>{transactionId}</span>
+            </p>
+          </div>
+          <button
+            type="button"
+            className="btn btn-ghost"
+            onClick={onClose}
+            style={{ padding: '4px', borderRadius: '6px' }}
+          >
+            <X size={16} />
+          </button>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
-            <label className="section-label" style={{ display: 'block', marginBottom: '4px' }}>
+            <label className="section-label" style={{ display: 'block', marginBottom: '6px' }}>
               Resolved By
             </label>
             <input
@@ -81,23 +96,23 @@ export const ResolveModal: React.FC<ResolveModalProps> = ({
           </div>
 
           <div>
-            <label className="section-label" style={{ display: 'block', marginBottom: '4px' }}>
+            <label className="section-label" style={{ display: 'block', marginBottom: '6px' }}>
               Resolution Notes
             </label>
             <textarea
               rows={4}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Provide reason for resolution or manual adjustment details..."
+              placeholder="Provide justification or manual ledger adjustment notes..."
               required
               style={{ width: '100%' }}
             />
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '8px' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '8px' }}>
             <button
               type="button"
-              className="btn btn-ghost"
+              className="btn btn-secondary"
               onClick={onClose}
               disabled={loading}
             >
@@ -108,7 +123,13 @@ export const ResolveModal: React.FC<ResolveModalProps> = ({
               className="btn btn-primary"
               disabled={loading}
             >
-              {loading ? 'Saving...' : 'Confirm Resolve'}
+              {loading ? (
+                'Saving...'
+              ) : (
+                <>
+                  <CheckCircle size={14} /> Confirm Resolution
+                </>
+              )}
             </button>
           </div>
         </form>
@@ -116,3 +137,4 @@ export const ResolveModal: React.FC<ResolveModalProps> = ({
     </div>
   );
 };
+

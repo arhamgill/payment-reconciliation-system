@@ -4,6 +4,7 @@ import { StatCard } from '@/components/StatCard';
 import { ReconciliationRow } from '@/components/ReconciliationTable';
 import { SingleRunClient } from '@/components/SingleRunClient';
 import { SqlPanel } from '@/components/SqlPanel';
+import { Search, Cpu } from 'lucide-react';
 
 export const revalidate = 0;
 
@@ -98,17 +99,17 @@ ORDER BY
 
   return (
     <div>
-      <div style={{ marginBottom: '24px' }}>
+      <div style={{ marginBottom: '28px' }}>
         <h1 className="page-title">Reconciliation Run #{run.id}</h1>
         <p className="page-subtitle">
           Executed on {new Date(run.run_date).toISOString().replace('T', ' ').slice(0, 16)} · Bank:{' '}
-          <code style={{ color: 'var(--accent)' }}>{run.bank_filename}</code> · Internal:{' '}
-          <code style={{ color: 'var(--accent)' }}>{run.internal_filename}</code>
+          <code style={{ color: '#ffffff', fontFamily: "'Fira Code', monospace" }}>{run.bank_filename}</code> · Internal:{' '}
+          <code style={{ color: '#ffffff', fontFamily: "'Fira Code', monospace" }}>{run.internal_filename}</code>
         </p>
       </div>
 
       {/* Metric Cards for this run */}
-      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '32px' }}>
+      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '36px' }}>
         <StatCard
           label="Matched Records"
           value={run.matched_count}
@@ -139,17 +140,17 @@ ORDER BY
       <SingleRunClient runId={run.id} rows={resultsRes.rows} />
 
       {/* SQL Panels */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '24px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '32px' }}>
         <div>
-          <h3 style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '8px' }}>
-            🔍 Query Used to View Run Results
+          <h3 style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Search size={14} /> Query Used to View Run Results
           </h3>
           <SqlPanel query={resultsQuery} executionMs={executionMs} params={{ run_id: runId }} />
         </div>
 
         <div>
-          <h3 style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '8px' }}>
-            ⚙️ Core Reconciliation Engine SQL (FULL OUTER JOIN)
+          <h3 style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Cpu size={14} /> Core Reconciliation Engine SQL (FULL OUTER JOIN)
           </h3>
           <SqlPanel query={RECONCILIATION_ENGINE_SQL} params={{ run_id: runId }} />
         </div>
@@ -157,4 +158,5 @@ ORDER BY
     </div>
   );
 }
+
 

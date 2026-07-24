@@ -3,6 +3,7 @@ import { pool } from '@/lib/db';
 import { StatCard } from '@/components/StatCard';
 import { StatusChip } from '@/components/StatusChip';
 import { SqlPanel } from '@/components/SqlPanel';
+import { Plus, ArrowRight } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -88,18 +89,18 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px' }}>
         <div>
           <h1 className="page-title">Operations Dashboard</h1>
           <p className="page-subtitle">Overview of payment reconciliation runs & mismatch metrics</p>
         </div>
         <Link href="/upload" className="btn btn-primary">
-          + New Reconciliation Run
+          <Plus size={16} /> New Reconciliation Run
         </Link>
       </div>
 
       {/* Top Stat Cards */}
-      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '32px' }}>
+      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '36px' }}>
         <StatCard
           label={runsCount > 0 ? "Runs Today" : "Total Runs"}
           value={runsCount > 0 ? runsCount : overallStats.total_runs}
@@ -125,15 +126,15 @@ export default async function DashboardPage() {
       </div>
 
       {/* Recent Runs Section */}
-      <div style={{ marginBottom: '24px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-          <h2 style={{ fontSize: '15px', fontWeight: 600 }}>Recent Reconciliation Runs</h2>
-          <Link href="/runs" style={{ fontSize: '12px', color: 'var(--accent)', textDecoration: 'none' }}>
-            View All Runs →
+      <div style={{ marginBottom: '28px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+          <h2 style={{ fontSize: '15px', fontWeight: 600, color: 'var(--text-primary)' }}>Recent Reconciliation Runs</h2>
+          <Link href="/runs" style={{ fontSize: '12px', color: 'var(--text-secondary)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            View All Runs <ArrowRight size={12} />
           </Link>
         </div>
 
-        <div style={{ overflowX: 'auto', border: '1px solid var(--border)', borderRadius: '4px' }}>
+        <div style={{ overflowX: 'auto', border: '1px solid var(--border)', borderRadius: '8px', backgroundColor: 'var(--bg-surface)' }}>
           <table style={{ minWidth: '980px' }}>
             <thead>
               <tr>
@@ -152,7 +153,7 @@ export default async function DashboardPage() {
             <tbody>
               {recentRunsRes.rows.length === 0 ? (
                 <tr>
-                  <td colSpan={10} style={{ textAlign: 'center', padding: '32px', color: 'var(--text-secondary)' }}>
+                  <td colSpan={10} style={{ textAlign: 'center', padding: '32px', color: 'var(--text-muted)' }}>
                     No reconciliation runs executed yet. Upload CSV files to begin.
                   </td>
                 </tr>
@@ -164,7 +165,7 @@ export default async function DashboardPage() {
                       <td style={{ whiteSpace: 'nowrap' }}>
                         <Link
                           href={`/runs/${run.id}`}
-                          style={{ color: 'var(--text-primary)', fontWeight: 600, textDecoration: 'none' }}
+                          style={{ color: 'var(--text-primary)', fontWeight: 600, textDecoration: 'none', fontFamily: "'Fira Code', monospace" }}
                         >
                           #{run.id}
                         </Link>
@@ -172,12 +173,12 @@ export default async function DashboardPage() {
                       <td style={{ color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>
                         {new Date(run.run_date).toISOString().replace('T', ' ').slice(0, 16)}
                       </td>
-                      <td style={{ fontFamily: 'monospace', whiteSpace: 'nowrap' }}>{run.bank_filename}</td>
-                      <td style={{ fontFamily: 'monospace', whiteSpace: 'nowrap' }}>{run.internal_filename}</td>
+                      <td style={{ fontFamily: "'Fira Code', monospace", whiteSpace: 'nowrap', color: 'var(--text-secondary)' }}>{run.bank_filename}</td>
+                      <td style={{ fontFamily: "'Fira Code', monospace", whiteSpace: 'nowrap', color: 'var(--text-secondary)' }}>{run.internal_filename}</td>
                       <td>{run.total_bank_records}</td>
                       <td>{run.total_internal_records}</td>
                       <td style={{ color: 'var(--success)' }}>{run.matched_count}</td>
-                      <td style={{ color: issues > 0 ? 'var(--warning)' : 'inherit' }}>{issues}</td>
+                      <td style={{ color: issues > 0 ? 'var(--warning)' : 'var(--text-secondary)' }}>{issues}</td>
                       <td style={{ whiteSpace: 'nowrap' }}>
                         <StatusChip status={run.status} />
                       </td>
@@ -187,16 +188,12 @@ export default async function DashboardPage() {
                           className="btn btn-secondary"
                           style={{
                             fontSize: '11px',
-                            padding: '4px 12px',
-                            borderColor: 'var(--accent)',
-                            color: 'var(--accent)',
-                            fontWeight: 600,
+                            padding: '4px 10px',
+                            fontWeight: 500,
                             whiteSpace: 'nowrap',
-                            display: 'inline-flex',
-                            alignItems: 'center',
                           }}
                         >
-                          View Details →
+                          Details <ArrowRight size={12} />
                         </Link>
                       </td>
                     </tr>
@@ -212,3 +209,4 @@ export default async function DashboardPage() {
     </div>
   );
 }
+

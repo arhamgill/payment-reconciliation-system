@@ -1,4 +1,13 @@
 import React from 'react';
+import {
+  CheckCircle2,
+  AlertCircle,
+  XCircle,
+  RefreshCw,
+  AlertTriangle,
+  CheckCheck,
+  Clock,
+} from 'lucide-react';
 
 interface StatusChipProps {
   status: string;
@@ -40,62 +49,84 @@ export const StatusChip: React.FC<StatusChipProps> = ({
     }
   }
 
-  let color = 'var(--text-secondary)';
-  let bg = 'var(--bg-elevated)';
+  let color = '#a1a1aa';
+  let bg = 'rgba(39, 39, 42, 0.5)';
+  let borderColor = '#27272a';
   let label = status.charAt(0).toUpperCase() + status.slice(1);
+  let Icon = Clock;
 
   if (effectiveStatus === 'discrepancies_found') {
     color = '#f59e0b';
-    bg = '#1c1202';
+    bg = 'rgba(245, 158, 11, 0.1)';
+    borderColor = 'rgba(245, 158, 11, 0.25)';
     label = 'Discrepancies Found';
+    Icon = AlertTriangle;
   } else if (effectiveStatus === 'discrepancies_resolved' || effectiveStatus === 'all_resolved') {
     color = '#10b981';
-    bg = '#042f2e';
-    label = 'Discrepancies Resolved';
-  } else if (effectiveStatus === 'fully_balanced' || effectiveStatus === 'completed') {
-    color = '#22c55e';
-    bg = '#052e16';
-    label = 'Fully Balanced';
+    bg = 'rgba(16, 185, 129, 0.1)';
+    borderColor = 'rgba(16, 185, 129, 0.25)';
+    label = 'Resolved';
+    Icon = CheckCheck;
+  } else if (effectiveStatus === 'fully_balanced' || effectiveStatus === 'completed' || effectiveStatus === 'matched') {
+    color = '#10b981';
+    bg = 'rgba(16, 185, 129, 0.1)';
+    borderColor = 'rgba(16, 185, 129, 0.25)';
+    label = effectiveStatus === 'matched' ? 'Matched' : 'Fully Balanced';
+    Icon = CheckCircle2;
   } else if (effectiveStatus === 'processing') {
     color = '#3b82f6';
-    bg = '#0a192f';
+    bg = 'rgba(59, 130, 246, 0.1)';
+    borderColor = 'rgba(59, 130, 246, 0.25)';
     label = 'Processing';
+    Icon = RefreshCw;
   } else if (effectiveStatus === 'failed') {
     color = '#ef4444';
-    bg = '#1a0a0a';
+    bg = 'rgba(239, 68, 68, 0.1)';
+    borderColor = 'rgba(239, 68, 68, 0.25)';
     label = 'Failed';
-  } else if (effectiveStatus === 'matched') {
-    color = '#22c55e';
-    bg = '#052e16';
-    label = 'Matched';
+    Icon = XCircle;
   } else if (effectiveStatus === 'date_mismatch') {
-    color = '#fbbf24';
-    bg = '#271e05';
+    color = '#f59e0b';
+    bg = 'rgba(245, 158, 11, 0.1)';
+    borderColor = 'rgba(245, 158, 11, 0.25)';
     label = 'Date Mismatch';
+    Icon = AlertCircle;
   } else if (effectiveStatus === 'amount_mismatch') {
     color = '#f59e0b';
-    bg = '#1c1202';
+    bg = 'rgba(245, 158, 11, 0.1)';
+    borderColor = 'rgba(245, 158, 11, 0.25)';
     label = 'Amount Mismatch';
+    Icon = AlertCircle;
   } else if (effectiveStatus === 'amount_and_date_mismatch') {
     color = '#f97316';
-    bg = '#261204';
+    bg = 'rgba(249, 115, 22, 0.1)';
+    borderColor = 'rgba(249, 115, 22, 0.25)';
     label = 'Amount & Date Mismatch';
+    Icon = AlertCircle;
   } else if (effectiveStatus === 'mismatched' || effectiveStatus === 'pending') {
     color = '#f59e0b';
-    bg = '#1c1202';
+    bg = 'rgba(245, 158, 11, 0.1)';
+    borderColor = 'rgba(245, 158, 11, 0.25)';
     label = 'Mismatched';
+    Icon = AlertCircle;
   } else if (effectiveStatus === 'missing_in_bank') {
     color = '#ef4444';
-    bg = '#1a0a0a';
+    bg = 'rgba(239, 68, 68, 0.1)';
+    borderColor = 'rgba(239, 68, 68, 0.25)';
     label = 'Missing in Bank';
+    Icon = XCircle;
   } else if (effectiveStatus === 'missing_in_internal') {
     color = '#ef4444';
-    bg = '#1a0a0a';
+    bg = 'rgba(239, 68, 68, 0.1)';
+    borderColor = 'rgba(239, 68, 68, 0.25)';
     label = 'Missing in Internal';
+    Icon = XCircle;
   } else if (effectiveStatus === 'resolved') {
-    color = '#8b949e';
-    bg = '#1c2128';
+    color = '#a1a1aa';
+    bg = 'rgba(39, 39, 42, 0.5)';
+    borderColor = '#27272a';
     label = 'Resolved';
+    Icon = CheckCheck;
   }
 
   return (
@@ -103,17 +134,21 @@ export const StatusChip: React.FC<StatusChipProps> = ({
       style={{
         display: 'inline-flex',
         alignItems: 'center',
+        gap: '5px',
         fontSize: '11px',
-        fontWeight: 600,
+        fontWeight: 500,
         padding: '2px 8px',
-        borderRadius: '4px',
+        borderRadius: '9999px',
         color,
         backgroundColor: bg,
-        letterSpacing: '0.02em',
+        border: `1px solid ${borderColor}`,
+        letterSpacing: '0.01em',
         whiteSpace: 'nowrap',
       }}
     >
+      <Icon size={12} strokeWidth={2} />
       {label}
     </span>
   );
 };
+

@@ -32,14 +32,14 @@ export default async function IssuesPage() {
 
   return (
     <div>
-      <div style={{ marginBottom: '24px' }}>
+      <div style={{ marginBottom: '28px' }}>
         <h1 className="page-title">Unresolved Discrepancies</h1>
         <p className="page-subtitle">
           Active payment mismatches requiring manual inspection or product operations resolution
         </p>
       </div>
 
-      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '28px' }}>
+      <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '36px' }}>
         <StatCard
           label="Open Discrepancies"
           value={stats.open_issues || 0}
@@ -60,8 +60,8 @@ export default async function IssuesPage() {
         />
       </div>
 
-      <div style={{ marginBottom: '24px' }}>
-        <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '12px' }}>
+      <div style={{ marginBottom: '28px' }}>
+        <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '12px', color: 'var(--text-primary)' }}>
           Open Action Items ({res.rows.length} pending)
         </h2>
         <ReconciliationTable rows={res.rows} />
@@ -71,3 +71,4 @@ export default async function IssuesPage() {
     </div>
   );
 }
+
