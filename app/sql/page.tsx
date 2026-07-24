@@ -88,6 +88,11 @@ ORDER BY total_amount DESC;`,
 FROM reconciliation_results rr
 WHERE rr.run_id = (SELECT MAX(id) FROM reconciliation_runs)
 ORDER BY
+  CASE
+    WHEN rr.resolved = FALSE AND rr.match_status != 'matched' THEN 1
+    WHEN rr.resolved = TRUE  AND rr.match_status != 'matched' THEN 2
+    ELSE 3
+  END,
   CASE rr.match_status
     WHEN 'mismatched'          THEN 1
     WHEN 'missing_in_bank'     THEN 2
@@ -95,6 +100,7 @@ ORDER BY
     ELSE 4
   END;`,
   },
+
 ];
 
 export default function SqlWorkbenchPage() {

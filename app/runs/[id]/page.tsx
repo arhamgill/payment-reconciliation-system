@@ -84,6 +84,11 @@ export default async function SingleRunPage({ params }: SingleRunPageProps) {
 FROM reconciliation_results
 WHERE run_id = $1
 ORDER BY
+  CASE
+    WHEN resolved = FALSE AND match_status != 'matched' THEN 1
+    WHEN resolved = TRUE  AND match_status != 'matched' THEN 2
+    ELSE 3
+  END,
   CASE match_status
     WHEN 'mismatched'          THEN 1
     WHEN 'missing_in_bank'     THEN 2
@@ -91,6 +96,7 @@ ORDER BY
     ELSE 4
   END,
   transaction_id ASC;`;
+
 
   // Fetch results for this run
   const resultsRes = await pool.query<ReconciliationRow>(resultsQuery, [runId]);
