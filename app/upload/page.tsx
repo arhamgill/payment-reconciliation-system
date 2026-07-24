@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { FileDropZone } from '@/components/FileDropZone';
 import { uploadAction } from '@/app/actions/upload';
-import { Zap, AlertCircle, Info } from 'lucide-react';
+import { AlertCircle, Info } from 'lucide-react';
 
 export default function UploadPage() {
   const router = useRouter();
@@ -102,16 +102,12 @@ export default function UploadPage() {
             color: 'var(--text-secondary)',
           }}
         >
-          <div style={{ fontWeight: 500, color: 'var(--text-primary)', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div style={{ fontWeight: 500, color: 'var(--text-primary)', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Info size={14} /> Expected CSV Schema Format:
           </div>
-          <code style={{ fontFamily: "'Fira Code', monospace", color: '#ffffff', backgroundColor: 'var(--bg-base)', padding: '6px 10px', borderRadius: '4px', display: 'block', border: '1px solid var(--border-subtle)', marginBottom: '8px' }}>
+          <code style={{ fontFamily: "'Fira Code', monospace", color: '#ffffff', backgroundColor: 'var(--bg-base)', padding: '8px 12px', borderRadius: '4px', display: 'block', border: '1px solid var(--border-subtle)' }}>
             transaction_id, amount, currency, transaction_date, description, status
           </code>
-          <div>
-            Tip: Test sample files available at <code style={{ fontFamily: "'Fira Code', monospace" }}>/sample-data/bank_sample.csv</code> and{' '}
-            <code style={{ fontFamily: "'Fira Code', monospace" }}>/sample-data/internal_sample.csv</code>.
-          </div>
         </div>
 
         <button
@@ -120,16 +116,11 @@ export default function UploadPage() {
           disabled={loading || !bankFile || !internalFile}
           style={{ padding: '10px 24px', fontSize: '14px' }}
         >
-          {loading ? (
-            'Processing & Reconciling...'
-          ) : (
-            <>
-              <Zap size={16} /> Run Automated Reconciliation
-            </>
-          )}
+          {loading ? 'Processing & Reconciling...' : 'Run Automated Reconciliation'}
         </button>
       </form>
     </div>
   );
 }
+
 
