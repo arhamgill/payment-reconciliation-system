@@ -115,13 +115,11 @@ export default async function DashboardPage() {
           label={runsCount > 0 ? "Mismatches Today" : "Total Mismatches"}
           value={mismatches.toLocaleString()}
           subtext="Requires resolution"
-          variant={mismatches > 0 ? 'danger' : 'default'}
         />
         <StatCard
           label="Match Rate"
           value={matchRate}
           subtext="Accuracy ratio"
-          variant="success"
         />
       </div>
 
@@ -177,8 +175,8 @@ export default async function DashboardPage() {
                       <td style={{ fontFamily: "'Fira Code', monospace", whiteSpace: 'nowrap', color: 'var(--text-secondary)' }}>{run.internal_filename}</td>
                       <td>{run.total_bank_records}</td>
                       <td>{run.total_internal_records}</td>
-                      <td style={{ color: 'var(--success)' }}>{run.matched_count}</td>
-                      <td style={{ color: issues > 0 ? 'var(--warning)' : 'var(--text-secondary)' }}>{issues}</td>
+                      <td>{run.matched_count}</td>
+                      <td>{issues}</td>
                       <td style={{ whiteSpace: 'nowrap' }}>
                         <StatusChip status={run.status} />
                       </td>
@@ -204,6 +202,7 @@ export default async function DashboardPage() {
           </table>
         </div>
       </div>
+
 
       <SqlPanel query={DASHBOARD_QUERY} executionMs={executionMs} />
     </div>

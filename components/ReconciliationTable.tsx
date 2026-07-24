@@ -80,18 +80,18 @@ export const ReconciliationTable: React.FC<ReconciliationTableProps> = ({ rows }
                   <tr key={row.id}>
                     <td style={{ paddingLeft: '16px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        {/* Resend-style Row Icon Badge */}
+                        {/* Resend-style Neutral Row Icon Badge */}
                         <div
                           style={{
                             width: '28px',
                             height: '28px',
                             borderRadius: '6px',
-                            backgroundColor: isMatched || row.resolved ? '#04261c' : isIssue ? '#261904' : '#141414',
-                            border: `1px solid ${isMatched || row.resolved ? 'rgba(0,229,153,0.3)' : isIssue ? 'rgba(245,158,11,0.3)' : '#222'}`,
+                            backgroundColor: '#141414',
+                            border: '1px solid #222222',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            color: isMatched || row.resolved ? '#00e599' : isIssue ? '#f59e0b' : '#888',
+                            color: '#888888',
                           }}
                         >
                           {isMatched || row.resolved ? <ArrowUpRight size={14} /> : <AlertCircle size={14} />}
@@ -116,29 +116,21 @@ export const ReconciliationTable: React.FC<ReconciliationTableProps> = ({ rows }
                     <td>{formatAmount(row.bank_amount)}</td>
                     <td>{formatAmount(row.internal_amount)}</td>
 
-                    <td
-                      style={{
-                        color:
-                          row.amount_diff && parseFloat(String(row.amount_diff)) !== 0
-                            ? 'var(--warning)'
-                            : '#ffffff',
-                        fontFamily: "'Fira Code', monospace",
-                      }}
-                    >
+                    <td style={{ fontFamily: "'Fira Code', monospace", color: '#ffffff' }}>
                       {formatAmount(row.amount_diff)}
                     </td>
 
-                    <td style={{ color: isDateMismatch ? 'var(--warning)' : 'var(--text-secondary)' }}>
+                    <td style={{ color: 'var(--text-secondary)' }}>
                       {formattedBankDate}
                     </td>
 
-                    <td style={{ color: isDateMismatch ? 'var(--warning)' : 'var(--text-secondary)' }}>
+                    <td style={{ color: 'var(--text-secondary)' }}>
                       {formattedInternalDate}
                     </td>
 
                     <td>
                       {row.resolved ? (
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#00e599', fontSize: '12px', fontWeight: 500 }}>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#ffffff', fontSize: '12px', fontWeight: 500 }}>
                           <Check size={14} /> Resolved
                         </span>
                       ) : (
@@ -166,6 +158,7 @@ export const ReconciliationTable: React.FC<ReconciliationTableProps> = ({ rows }
                     </td>
                   </tr>
                 );
+
               })
             )}
           </tbody>

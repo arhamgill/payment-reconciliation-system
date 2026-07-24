@@ -94,19 +94,14 @@ export default async function AllRunsPage() {
                   <td style={{ fontFamily: "'Fira Code', monospace", whiteSpace: 'nowrap', color: 'var(--text-secondary)' }}>{run.internal_filename}</td>
                   <td>{run.total_bank_records}</td>
                   <td>{run.total_internal_records}</td>
-                  <td style={{ color: 'var(--success)' }}>{run.matched_count}</td>
-                  <td style={{ color: run.mismatched_count > 0 ? 'var(--warning)' : 'var(--text-secondary)' }}>
-                    {run.mismatched_count}
-                  </td>
-                  <td style={{ color: run.missing_in_bank_count > 0 ? 'var(--danger)' : 'var(--text-secondary)' }}>
-                    {run.missing_in_bank_count}
-                  </td>
-                  <td style={{ color: run.missing_in_internal_count > 0 ? 'var(--danger)' : 'var(--text-secondary)' }}>
-                    {run.missing_in_internal_count}
-                  </td>
-                  <td style={{ fontWeight: 500, color: run.match_pct && Number(run.match_pct) === 100 ? 'var(--success)' : '#ffffff', whiteSpace: 'nowrap' }}>
+                  <td>{run.matched_count}</td>
+                  <td>{run.mismatched_count}</td>
+                  <td>{run.missing_in_bank_count}</td>
+                  <td>{run.missing_in_internal_count}</td>
+                  <td style={{ fontWeight: 500, color: '#ffffff', whiteSpace: 'nowrap' }}>
                     {run.match_pct !== null && run.match_pct !== undefined ? `${run.match_pct}%` : '—'}
                   </td>
+
                   <td style={{ whiteSpace: 'nowrap' }}>
                     <StatusChip status={run.status} />
                   </td>

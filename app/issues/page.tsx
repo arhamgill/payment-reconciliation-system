@@ -44,21 +44,19 @@ export default async function IssuesPage() {
           label="Open Discrepancies"
           value={stats.open_issues || 0}
           subtext="Requires manual action"
-          variant={Number(stats.open_issues) > 0 ? 'danger' : 'success'}
         />
         <StatCard
           label="Resolved Issues"
           value={stats.resolved_issues || 0}
           subtext="Manually reviewed & resolved"
-          variant="success"
         />
         <StatCard
           label="Total Historical Discrepancies"
           value={stats.total_issues || 0}
           subtext="Across all reconciliation runs"
-          variant="default"
         />
       </div>
+
 
       <div style={{ marginBottom: '28px' }}>
         <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '12px', color: 'var(--text-primary)' }}>

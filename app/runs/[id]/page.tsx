@@ -114,27 +114,24 @@ ORDER BY
           label="Matched Records"
           value={run.matched_count}
           subtext="Amount & date aligned"
-          variant="success"
         />
         <StatCard
           label="Amount/Date Mismatches"
           value={run.mismatched_count}
           subtext="Discrepancy detected"
-          variant={run.mismatched_count > 0 ? 'danger' : 'default'}
         />
         <StatCard
           label="Missing in Bank"
           value={run.missing_in_bank_count}
           subtext="In internal ledger only"
-          variant={run.missing_in_bank_count > 0 ? 'danger' : 'default'}
         />
         <StatCard
           label="Missing in Internal"
           value={run.missing_in_internal_count}
           subtext="In bank statement only"
-          variant={run.missing_in_internal_count > 0 ? 'danger' : 'default'}
         />
       </div>
+
 
       {/* Interactive Results & Filters */}
       <SingleRunClient runId={run.id} rows={resultsRes.rows} />
