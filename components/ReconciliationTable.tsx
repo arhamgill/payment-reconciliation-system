@@ -130,13 +130,14 @@ export const ReconciliationTable: React.FC<ReconciliationTableProps> = ({ rows }
 
                     <td>
                       {row.resolved ? (
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#ffffff', fontSize: '12px', fontWeight: 500 }}>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#00e599', fontSize: '12px', fontWeight: 500 }}>
                           <Check size={14} /> Resolved
                         </span>
                       ) : (
                         <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>—</span>
                       )}
                     </td>
+
 
                     <td style={{ textAlign: 'right', paddingRight: '16px' }}>
                       {!row.resolved && row.match_status !== 'matched' ? (
