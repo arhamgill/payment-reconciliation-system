@@ -10,7 +10,8 @@ import {
   Search,
   AlertTriangle,
   Terminal,
-  ShieldCheck,
+  ChevronsUpDown,
+  User,
 } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
@@ -33,49 +34,50 @@ export const Sidebar: React.FC = () => {
         left: 0,
         bottom: 0,
         width: '240px',
-        backgroundColor: 'var(--bg-surface)',
-        borderRight: '1px solid var(--border)',
+        backgroundColor: '#000000',
+        borderRight: '1px solid var(--border-subtle)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        padding: '20px 14px',
+        padding: '16px 12px',
         zIndex: 40,
       }}
     >
       <div>
-        {/* Brand Header */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '28px', padding: '0 8px' }}>
-          <div
-            style={{
-              width: '28px',
-              height: '28px',
-              backgroundColor: '#ffffff',
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#000000',
-            }}
-          >
-            <ShieldCheck size={16} strokeWidth={2.5} />
+        {/* Resend Workspace Selector Header */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: '20px',
+            padding: '6px 10px',
+            borderRadius: '8px',
+            cursor: 'pointer',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div
+              style={{
+                width: '22px',
+                height: '22px',
+                backgroundColor: '#00e599',
+                borderRadius: '6px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#000000',
+                fontWeight: 700,
+                fontSize: '12px',
+              }}
+            >
+              R
+            </div>
+            <span style={{ fontWeight: 600, fontSize: '13.5px', color: '#ffffff', letterSpacing: '-0.01em' }}>
+              resolver.dev
+            </span>
           </div>
-          <span style={{ fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
-            Resolver
-          </span>
-          <span
-            style={{
-              fontSize: '10px',
-              fontWeight: 600,
-              backgroundColor: 'var(--bg-elevated)',
-              color: 'var(--text-muted)',
-              padding: '2px 6px',
-              borderRadius: '4px',
-              border: '1px solid var(--border)',
-              letterSpacing: '0.05em',
-            }}
-          >
-            OPS
-          </span>
+          <ChevronsUpDown size={14} style={{ color: '#666666' }} />
         </div>
 
         {/* Navigation Items */}
@@ -90,19 +92,18 @@ export const Sidebar: React.FC = () => {
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '10px',
-                  padding: '8px 12px',
-                  borderRadius: '6px',
-                  fontSize: '13px',
+                  gap: '12px',
+                  padding: '9px 12px',
+                  borderRadius: '8px',
+                  fontSize: '13.5px',
                   fontWeight: isActive ? 500 : 400,
-                  color: isActive ? '#ffffff' : 'var(--text-secondary)',
-                  backgroundColor: isActive ? 'var(--bg-elevated)' : 'transparent',
+                  color: isActive ? '#ffffff' : '#888888',
+                  backgroundColor: isActive ? '#1f1f1f' : 'transparent',
                   textDecoration: 'none',
-                  border: isActive ? '1px solid var(--border)' : '1px solid transparent',
                   transition: 'all 0.15s ease',
                 }}
               >
-                <Icon size={16} strokeWidth={isActive ? 2 : 1.75} style={{ color: isActive ? '#ffffff' : 'var(--text-secondary)' }} />
+                <Icon size={16} strokeWidth={1.8} style={{ color: isActive ? '#ffffff' : '#888888' }} />
                 {item.label}
               </Link>
             );
@@ -110,12 +111,51 @@ export const Sidebar: React.FC = () => {
         </nav>
       </div>
 
-      {/* Footer info */}
-      <div style={{ padding: '12px 8px', borderTop: '1px solid var(--border-subtle)', fontSize: '11px', color: 'var(--text-muted)', lineHeight: '1.4' }}>
-        <div style={{ fontWeight: 500, color: 'var(--text-secondary)' }}>Resolver Engine v1.0</div>
-        <div>Automated Payment Reconciliation</div>
+      {/* Footer Profile Info (Resend style bottom item) */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          padding: '8px 10px',
+          borderRadius: '8px',
+          borderTop: '1px solid var(--border-subtle)',
+          marginTop: 'auto',
+          paddingTop: '16px',
+        }}
+      >
+        <div
+          style={{
+            width: '24px',
+            height: '24px',
+            borderRadius: '50%',
+            backgroundColor: '#1f1f1f',
+            border: '1px solid #333333',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#888888',
+          }}
+        >
+          <User size={13} />
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <span
+            style={{
+              fontSize: '12px',
+              fontWeight: 500,
+              color: '#ffffff',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            ops.admin@resolver.dev
+          </span>
+        </div>
       </div>
     </aside>
   );
 };
+
 

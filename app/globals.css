@@ -1,21 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  --bg-base: #09090b;          /* Ultra dark zinc background */
-  --bg-surface: #121215;       /* Sidebar and card surface */
-  --bg-elevated: #18181b;      /* Table row hover, inputs, elevated cards */
-  --bg-card: #0f0f12;
-  --border: #27272a;           /* Clean thin borders */
-  --border-subtle: #1f1f23;
-  --text-primary: #fafafa;     /* High contrast white text */
-  --text-secondary: #a1a1aa;   /* Muted zinc text */
-  --text-muted: #71717a;       /* Subtle text */
-  --accent: #ffffff;           /* Crisp white for primary actions */
-  --accent-hover: #e4e4e7;
-  --success: #10b981;          /* Matched status green */
-  --warning: #f59e0b;          /* Mismatched status amber */
-  --danger: #ef4444;           /* Missing/danger status red */
-  --danger-soft: #1c1012;      /* Danger banner bg */
+  --bg-base: #000000;          /* Pitch black Resend canvas */
+  --bg-surface: #0a0a0a;       /* Sidebar and card surface */
+  --bg-elevated: #141414;      /* Inputs, dropdowns, table header */
+  --bg-hover: #1f1f1f;         /* Active sidebar item, button hover */
+  --border: #222222;           /* Resend dark subtle borders */
+  --border-subtle: #161616;
+  --text-primary: #ffffff;     /* High contrast white */
+  --text-secondary: #888888;   /* Resend dim gray text */
+  --text-muted: #555555;       /* Subtle text */
+  --accent: #ffffff;           /* Primary button white */
+  --accent-hover: #e5e5e5;
+  
+  /* Resend Glowing Emerald Green */
+  --success: #00e599;
+  --success-bg: #04261c;
+  --success-border: rgba(0, 229, 153, 0.2);
+
+  /* Resend Warm Amber */
+  --warning: #f59e0b;
+  --warning-bg: #261904;
+  --warning-border: rgba(245, 158, 11, 0.2);
+
+  /* Resend Crimson Red */
+  --danger: #ff4d4d;
+  --danger-bg: #280a0c;
+  --danger-border: rgba(255, 77, 77, 0.2);
 }
 
 *, *::before, *::after {
@@ -35,12 +46,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Typography & Headers */
+/* Typography & Headers (Resend Style) */
 h1, .page-title {
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 600;
   color: var(--text-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
 p.page-subtitle, .page-subtitle {
@@ -53,12 +64,11 @@ p.page-subtitle, .page-subtitle {
 .section-label {
   font-size: 11px;
   font-weight: 500;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   letter-spacing: 0.04em;
-  text-transform: uppercase;
 }
 
-/* Tables */
+/* Resend Tables */
 table {
   width: 100%;
   border-collapse: separate;
@@ -67,20 +77,18 @@ table {
 }
 
 th {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  background-color: var(--bg-card);
+  color: var(--text-secondary);
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  background-color: var(--bg-surface);
 }
 
 td {
   font-size: 13px;
   color: var(--text-primary);
-  padding: 12px 14px;
+  padding: 14px 16px;
   border-bottom: 1px solid var(--border-subtle);
 }
 
@@ -89,32 +97,31 @@ tr:last-child td {
 }
 
 tr:hover td {
-  background-color: var(--bg-elevated);
+  background-color: #0d0d0d;
 }
 
-/* Form inputs & controls */
+/* Form inputs & controls (Resend Rounded Pills) */
 input, select, textarea {
-  background-color: var(--bg-base);
+  background-color: var(--bg-elevated);
   border: 1px solid var(--border);
   color: var(--text-primary);
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 8px 12px;
   font-size: 13px;
   font-family: inherit;
   outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: all 0.15s ease;
 }
 
 input:focus, select:focus, textarea:focus {
-  border-color: #52525b;
-  box-shadow: 0 0 0 1px #52525b;
+  border-color: #444444;
 }
 
-/* Buttons (Vercel Minimalist White / Black Style) */
+/* Buttons (Resend Style) */
 button, .btn {
   font-size: 13px;
   font-weight: 500;
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 7px 14px;
   cursor: pointer;
   border: 1px solid transparent;
@@ -131,12 +138,11 @@ button, .btn {
   background-color: #ffffff;
   color: #000000;
   border-color: #ffffff;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .btn-primary:hover {
-  background-color: #e4e4e7;
-  border-color: #e4e4e7;
+  background-color: #e5e5e5;
+  border-color: #e5e5e5;
 }
 
 .btn-primary:disabled {
@@ -151,8 +157,8 @@ button, .btn {
 }
 
 .btn-secondary:hover {
-  background-color: #27272a;
-  border-color: #3f3f46;
+  background-color: var(--bg-hover);
+  border-color: #333333;
 }
 
 .btn-ghost {
@@ -163,18 +169,17 @@ button, .btn {
 
 .btn-ghost:hover {
   color: var(--text-primary);
-  background-color: var(--bg-elevated);
+  background-color: var(--bg-hover);
 }
 
 .btn-danger {
-  background-color: #ef4444;
+  background-color: #ff4d4d;
   color: #ffffff;
-  border-color: #ef4444;
+  border-color: #ff4d4d;
 }
 
 .btn-danger:hover {
-  background-color: #dc2626;
-  border-color: #dc2626;
+  background-color: #e60000;
 }
 
 /* Scrollbars */
@@ -193,7 +198,7 @@ button, .btn {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+  background: var(--text-secondary);
 }
 
 /* Spinner Animation */
@@ -211,4 +216,5 @@ button, .btn {
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
+
 

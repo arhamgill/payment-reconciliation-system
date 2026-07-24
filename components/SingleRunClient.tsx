@@ -53,7 +53,7 @@ export const SingleRunClient: React.FC<SingleRunClientProps> = ({ runId, rows })
   };
 
   const filterButtons: { label: string; key: FilterType; count: number }[] = [
-    { label: 'All', key: 'ALL', count: counts.ALL },
+    { label: 'All Records', key: 'ALL', count: counts.ALL },
     { label: 'Matched', key: 'matched', count: counts.matched },
     { label: 'Amount Mismatches', key: 'amount_mismatch', count: counts.amount_mismatch },
     { label: 'Date Mismatches', key: 'date_mismatch', count: counts.date_mismatch },
@@ -74,8 +74,8 @@ export const SingleRunClient: React.FC<SingleRunClientProps> = ({ runId, rows })
           marginBottom: '20px',
         }}
       >
-        {/* Filter Bar */}
-        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+        {/* Resend Style Pill Filter Bar */}
+        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', backgroundColor: '#0a0a0a', padding: '4px', borderRadius: '10px', border: '1px solid var(--border)' }}>
           {filterButtons.map((btn) => {
             const isActive = filter === btn.key;
             return (
@@ -83,25 +83,29 @@ export const SingleRunClient: React.FC<SingleRunClientProps> = ({ runId, rows })
                 key={btn.key}
                 type="button"
                 onClick={() => setFilter(btn.key)}
-                className="btn"
                 style={{
-                  fontSize: '12px',
-                  padding: '5px 12px',
-                  borderRadius: '6px',
-                  backgroundColor: isActive ? 'var(--bg-elevated)' : 'transparent',
-                  border: isActive ? '1px solid var(--border)' : '1px solid transparent',
-                  color: isActive ? '#ffffff' : 'var(--text-secondary)',
+                  fontSize: '12.5px',
+                  padding: '6px 12px',
+                  borderRadius: '7px',
+                  backgroundColor: isActive ? '#1f1f1f' : 'transparent',
+                  border: 'none',
+                  color: isActive ? '#ffffff' : '#888888',
                   fontWeight: isActive ? 500 : 400,
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  transition: 'all 0.15s ease',
                 }}
               >
                 {btn.label}{' '}
                 <span
                   style={{
-                    fontSize: '10px',
+                    fontSize: '10.5px',
                     padding: '1px 6px',
                     borderRadius: '9999px',
-                    backgroundColor: isActive ? 'var(--border)' : 'var(--bg-elevated)',
-                    color: isActive ? '#ffffff' : 'var(--text-muted)',
+                    backgroundColor: isActive ? '#333333' : '#141414',
+                    color: isActive ? '#ffffff' : '#666666',
                   }}
                 >
                   {btn.count}
@@ -117,7 +121,7 @@ export const SingleRunClient: React.FC<SingleRunClientProps> = ({ runId, rows })
             href={`/api/export/${runId}`}
             download
             className="btn btn-secondary"
-            style={{ fontSize: '12px', padding: '6px 14px', textDecoration: 'none' }}
+            style={{ fontSize: '12.5px', padding: '6.5px 14px', textDecoration: 'none' }}
           >
             <Download size={14} /> Export CSV
           </a>
@@ -126,7 +130,7 @@ export const SingleRunClient: React.FC<SingleRunClientProps> = ({ runId, rows })
             onClick={handleDelete}
             disabled={deleting}
             className="btn btn-ghost"
-            style={{ fontSize: '12px', padding: '6px 12px', color: 'var(--danger)' }}
+            style={{ fontSize: '12.5px', padding: '6.5px 14px', color: 'var(--danger)' }}
           >
             <Trash2 size={14} /> {deleting ? 'Deleting...' : 'Delete Run'}
           </button>
@@ -134,12 +138,18 @@ export const SingleRunClient: React.FC<SingleRunClientProps> = ({ runId, rows })
       </div>
 
       <div style={{ marginBottom: '16px' }}>
-        <h2 style={{ fontSize: '15px', fontWeight: 600, marginBottom: '12px', color: 'var(--text-primary)' }}>
-          Reconciliation Results ({filteredRows.length} shown)
-        </h2>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <h2 style={{ fontSize: '15px', fontWeight: 600, color: '#ffffff' }}>
+            Reconciliation Records
+          </h2>
+          <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+            Showing {filteredRows.length} of {rows.length} records
+          </span>
+        </div>
         <ReconciliationTable rows={filteredRows} />
       </div>
     </div>
   );
 };
+
 

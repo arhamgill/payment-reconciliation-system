@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { StatusChip } from './StatusChip';
 import { ResolveModal } from './ResolveModal';
-import { Check, ArrowRight } from 'lucide-react';
+import { Check, ArrowRight, ArrowUpRight, AlertTriangle, AlertCircle } from 'lucide-react';
 
 export interface ReconciliationRow {
   id: number;
@@ -40,11 +40,11 @@ export const ReconciliationTable: React.FC<ReconciliationTableProps> = ({ rows }
 
   return (
     <>
-      <div style={{ overflowX: 'auto', border: '1px solid var(--border)', borderRadius: '8px', backgroundColor: 'var(--bg-surface)' }}>
+      <div style={{ overflowX: 'auto', border: '1px solid var(--border)', borderRadius: '8px', backgroundColor: 'var(--bg-base)' }}>
         <table>
           <thead>
             <tr>
-              <th>Transaction ID</th>
+              <th style={{ paddingLeft: '16px' }}>Transaction ID</th>
               <th>Status</th>
               <th>Bank Amount</th>
               <th>Internal Amount</th>
@@ -52,13 +52,13 @@ export const ReconciliationTable: React.FC<ReconciliationTableProps> = ({ rows }
               <th>Bank Date</th>
               <th>Internal Date</th>
               <th>Resolved</th>
-              <th style={{ textAlign: 'right' }}>Action</th>
+              <th style={{ textAlign: 'right', paddingRight: '16px' }}>Action</th>
             </tr>
           </thead>
           <tbody>
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={9} style={{ textAlign: 'center', padding: '32px', color: 'var(--text-muted)' }}>
+                <td colSpan={9} style={{ textAlign: 'center', padding: '36px', color: 'var(--text-secondary)' }}>
                   No transaction records found matching filter criteria.
                 </td>
               </tr>
@@ -73,11 +73,36 @@ export const ReconciliationTable: React.FC<ReconciliationTableProps> = ({ rows }
                   formattedInternalDate !== '—' &&
                   formattedBankDate !== formattedInternalDate;
 
+                const isMatched = row.match_status === 'matched';
+                const isIssue = !isMatched && !row.resolved;
+
                 return (
                   <tr key={row.id}>
-                    <td style={{ fontFamily: "'Fira Code', monospace", fontWeight: 500, color: 'var(--text-primary)' }}>
-                      {row.transaction_id}
+                    <td style={{ paddingLeft: '16px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        {/* Resend-style Row Icon Badge */}
+                        <div
+                          style={{
+                            width: '28px',
+                            height: '28px',
+                            borderRadius: '6px',
+                            backgroundColor: isMatched || row.resolved ? '#04261c' : isIssue ? '#261904' : '#141414',
+                            border: `1px solid ${isMatched || row.resolved ? 'rgba(0,229,153,0.3)' : isIssue ? 'rgba(245,158,11,0.3)' : '#222'}`,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: isMatched || row.resolved ? '#00e599' : isIssue ? '#f59e0b' : '#888',
+                          }}
+                        >
+                          {isMatched || row.resolved ? <ArrowUpRight size={14} /> : <AlertCircle size={14} />}
+                        </div>
+
+                        <span style={{ fontFamily: "'Fira Code', monospace", fontWeight: 500, color: '#ffffff', fontSize: '13px' }}>
+                          {row.transaction_id}
+                        </span>
+                      </div>
                     </td>
+
                     <td>
                       <StatusChip
                         status={row.match_status}
@@ -87,40 +112,46 @@ export const ReconciliationTable: React.FC<ReconciliationTableProps> = ({ rows }
                         internalDate={row.internal_date}
                       />
                     </td>
+
                     <td>{formatAmount(row.bank_amount)}</td>
                     <td>{formatAmount(row.internal_amount)}</td>
+
                     <td
                       style={{
                         color:
                           row.amount_diff && parseFloat(String(row.amount_diff)) !== 0
                             ? 'var(--warning)'
-                            : 'var(--text-primary)',
+                            : '#ffffff',
                         fontFamily: "'Fira Code', monospace",
                       }}
                     >
                       {formatAmount(row.amount_diff)}
                     </td>
+
                     <td style={{ color: isDateMismatch ? 'var(--warning)' : 'var(--text-secondary)' }}>
                       {formattedBankDate}
                     </td>
+
                     <td style={{ color: isDateMismatch ? 'var(--warning)' : 'var(--text-secondary)' }}>
                       {formattedInternalDate}
                     </td>
+
                     <td>
                       {row.resolved ? (
-                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: 'var(--success)', fontSize: '12px', fontWeight: 500 }}>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: '#00e599', fontSize: '12px', fontWeight: 500 }}>
                           <Check size={14} /> Resolved
                         </span>
                       ) : (
                         <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>—</span>
                       )}
                     </td>
-                    <td style={{ textAlign: 'right' }}>
+
+                    <td style={{ textAlign: 'right', paddingRight: '16px' }}>
                       {!row.resolved && row.match_status !== 'matched' ? (
                         <button
                           type="button"
                           className="btn btn-secondary"
-                          style={{ fontSize: '11px', padding: '3px 10px' }}
+                          style={{ fontSize: '11.5px', padding: '3px 10px' }}
                           onClick={() => setActiveResolve({ id: row.id, transactionId: row.transaction_id })}
                         >
                           Resolve <ArrowRight size={12} />
@@ -151,4 +182,5 @@ export const ReconciliationTable: React.FC<ReconciliationTableProps> = ({ rows }
     </>
   );
 };
+
 

@@ -49,82 +49,82 @@ export const StatusChip: React.FC<StatusChipProps> = ({
     }
   }
 
-  let color = '#a1a1aa';
-  let bg = 'rgba(39, 39, 42, 0.5)';
-  let borderColor = '#27272a';
+  let color = '#888888';
+  let bg = '#161616';
+  let borderColor = '#222222';
   let label = status.charAt(0).toUpperCase() + status.slice(1);
   let Icon = Clock;
 
   if (effectiveStatus === 'discrepancies_found') {
     color = '#f59e0b';
-    bg = 'rgba(245, 158, 11, 0.1)';
+    bg = '#261904';
     borderColor = 'rgba(245, 158, 11, 0.25)';
     label = 'Discrepancies Found';
     Icon = AlertTriangle;
   } else if (effectiveStatus === 'discrepancies_resolved' || effectiveStatus === 'all_resolved') {
-    color = '#10b981';
-    bg = 'rgba(16, 185, 129, 0.1)';
-    borderColor = 'rgba(16, 185, 129, 0.25)';
+    color = '#00e599';
+    bg = '#04261c';
+    borderColor = 'rgba(0, 229, 153, 0.25)';
     label = 'Resolved';
     Icon = CheckCheck;
   } else if (effectiveStatus === 'fully_balanced' || effectiveStatus === 'completed' || effectiveStatus === 'matched') {
-    color = '#10b981';
-    bg = 'rgba(16, 185, 129, 0.1)';
-    borderColor = 'rgba(16, 185, 129, 0.25)';
+    color = '#00e599';
+    bg = '#04261c';
+    borderColor = 'rgba(0, 229, 153, 0.25)';
     label = effectiveStatus === 'matched' ? 'Matched' : 'Fully Balanced';
     Icon = CheckCircle2;
   } else if (effectiveStatus === 'processing') {
     color = '#3b82f6';
-    bg = 'rgba(59, 130, 246, 0.1)';
+    bg = '#091c38';
     borderColor = 'rgba(59, 130, 246, 0.25)';
     label = 'Processing';
     Icon = RefreshCw;
   } else if (effectiveStatus === 'failed') {
-    color = '#ef4444';
-    bg = 'rgba(239, 68, 68, 0.1)';
-    borderColor = 'rgba(239, 68, 68, 0.25)';
+    color = '#ff4d4d';
+    bg = '#280a0c';
+    borderColor = 'rgba(255, 77, 77, 0.25)';
     label = 'Failed';
     Icon = XCircle;
   } else if (effectiveStatus === 'date_mismatch') {
     color = '#f59e0b';
-    bg = 'rgba(245, 158, 11, 0.1)';
+    bg = '#261904';
     borderColor = 'rgba(245, 158, 11, 0.25)';
     label = 'Date Mismatch';
     Icon = AlertCircle;
   } else if (effectiveStatus === 'amount_mismatch') {
     color = '#f59e0b';
-    bg = 'rgba(245, 158, 11, 0.1)';
+    bg = '#261904';
     borderColor = 'rgba(245, 158, 11, 0.25)';
     label = 'Amount Mismatch';
     Icon = AlertCircle;
   } else if (effectiveStatus === 'amount_and_date_mismatch') {
     color = '#f97316';
-    bg = 'rgba(249, 115, 22, 0.1)';
+    bg = '#281305';
     borderColor = 'rgba(249, 115, 22, 0.25)';
     label = 'Amount & Date Mismatch';
     Icon = AlertCircle;
   } else if (effectiveStatus === 'mismatched' || effectiveStatus === 'pending') {
     color = '#f59e0b';
-    bg = 'rgba(245, 158, 11, 0.1)';
+    bg = '#261904';
     borderColor = 'rgba(245, 158, 11, 0.25)';
     label = 'Mismatched';
     Icon = AlertCircle;
   } else if (effectiveStatus === 'missing_in_bank') {
-    color = '#ef4444';
-    bg = 'rgba(239, 68, 68, 0.1)';
-    borderColor = 'rgba(239, 68, 68, 0.25)';
+    color = '#ff4d4d';
+    bg = '#280a0c';
+    borderColor = 'rgba(255, 77, 77, 0.25)';
     label = 'Missing in Bank';
     Icon = XCircle;
   } else if (effectiveStatus === 'missing_in_internal') {
-    color = '#ef4444';
-    bg = 'rgba(239, 68, 68, 0.1)';
-    borderColor = 'rgba(239, 68, 68, 0.25)';
+    color = '#ff4d4d';
+    bg = '#280a0c';
+    borderColor = 'rgba(255, 77, 77, 0.25)';
     label = 'Missing in Internal';
     Icon = XCircle;
   } else if (effectiveStatus === 'resolved') {
-    color = '#a1a1aa';
-    bg = 'rgba(39, 39, 42, 0.5)';
-    borderColor = '#27272a';
+    color = '#888888';
+    bg = '#161616';
+    borderColor = '#222222';
     label = 'Resolved';
     Icon = CheckCheck;
   }
@@ -134,11 +134,11 @@ export const StatusChip: React.FC<StatusChipProps> = ({
       style={{
         display: 'inline-flex',
         alignItems: 'center',
-        gap: '5px',
-        fontSize: '11px',
+        gap: '6px',
+        fontSize: '12px',
         fontWeight: 500,
-        padding: '2px 8px',
-        borderRadius: '9999px',
+        padding: '3px 10px',
+        borderRadius: '6px',
         color,
         backgroundColor: bg,
         border: `1px solid ${borderColor}`,
@@ -146,9 +146,10 @@ export const StatusChip: React.FC<StatusChipProps> = ({
         whiteSpace: 'nowrap',
       }}
     >
-      <Icon size={12} strokeWidth={2} />
+      <Icon size={12} strokeWidth={2.2} />
       {label}
     </span>
   );
 };
+
 
